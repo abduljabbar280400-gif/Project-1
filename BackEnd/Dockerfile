@@ -5,19 +5,16 @@ FROM php:8.2-fpm-alpine
 RUN apk update && apk add --no-cache \
     nginx \
     supervisor \
-    postgresql-dev \
-    libpng-dev \
-    libjpeg-turbo-dev \
-    freetype-dev \
     zip \
-    libzip-dev \
     unzip \
     git \
     bash
 
-# Install PHP extensions
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo pdo_pgsql pgsql gd zip bcmath opcache
+# Download and install precompiled PHP extensions via php-extension-installer
+# This avoids compiling from scratch, preventing memory limits crash (OOM status 1) on Render free tier
+ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+RUN chmod +x /usr/local/bin/install-php-extensions && \
+    install-php-extensions pdo_pgsql pgsql gd zip bcmath opcache
 
 # Get Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer

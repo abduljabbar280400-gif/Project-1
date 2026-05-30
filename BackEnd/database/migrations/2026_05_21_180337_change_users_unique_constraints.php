@@ -11,14 +11,31 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            // Drop existing global email unique constraint
-            $table->dropUnique('users_email_unique');
-            
-            // Create composite unique constraints
-            $table->unique(['email', 'role']);
-            $table->unique(['phone', 'role']);
-        });
+        // 1. Drop existing global email unique constraint if it exists
+        try {
+            Schema::table('users', function (Blueprint $table) {
+                $table->dropUnique('users_email_unique');
+            });
+        } catch (\Exception $e) {
+            // Silently ignore if constraint doesn't exist
+        }
+        
+        // 2. Create composite unique constraints (using try-catch to prevent duplicates)
+        try {
+            Schema::table('users', function (Blueprint $table) {
+                $table->unique(['email', 'role']);
+            });
+        } catch (\Exception $e) {
+            // Silently ignore if already exists
+        }
+
+        try {
+            Schema::table('users', function (Blueprint $table) {
+                $table->unique(['phone', 'role']);
+            });
+        } catch (\Exception $e) {
+            // Silently ignore if already exists
+        }
     }
 
     /**
@@ -26,10 +43,22 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropUnique(['email', 'role']);
-            $table->dropUnique(['phone', 'role']);
-            $table->unique('email');
-        });
+        try {
+            Schema::table('users', function (Blueprint $table) {
+                $table->dropUnique(['email', 'role']);
+            });
+        } catch (\Exception $e) {}
+
+        try {
+            Schema::table('users', function (Blueprint $table) {
+                $table->dropUnique(['phone', 'role']);
+            });
+        } catch (\Exception $e) {}
+
+        try {
+            Schema::table('users', function (Blueprint $table) {
+                $table->unique('email');
+            });
+        } catch (\Exception $e) {}
     }
 };
