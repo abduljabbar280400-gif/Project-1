@@ -1,5 +1,5 @@
 # Use official PHP-FPM with Alpine Linux for a lightweight footprint
-FROM php:8.2-fpm-alpine
+FROM php:8.3-fpm-alpine
 
 # Install system dependencies
 RUN apk update && apk add --no-cache \
@@ -25,8 +25,8 @@ WORKDIR /var/www
 # Copy codebase
 COPY . /var/www
 
-# Install production composer dependencies
-RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+# Install production composer dependencies (excluding scripts that require environment variables at build-time)
+RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader --no-scripts
 
 # Setup storage and cache permissions
 RUN chmod -R 775 storage bootstrap/cache \
