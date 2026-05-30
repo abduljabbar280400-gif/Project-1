@@ -1,0 +1,165 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@import "tailwindcss";
+
+@theme {
+  /* New warm brown palette: 7D5A50 → B4846C → E5B299 → FCDEC0 */
+  --color-brand-50:  #FCDEC0;
+  --color-brand-100: #FCDEC0;
+  --color-brand-200: #E5B299;
+  --color-brand-300: #E5B299;
+  --color-brand-400: #B4846C;
+  --color-brand-500: #B4846C;
+  --color-brand-600: #7D5A50;
+  --color-brand-700: #6a4a42;
+  --color-brand-800: #57392e;
+  --color-brand-900: #3e2820;
+  --font-sans: "Outfit", "Inter", sans-serif;
+}
+
+/* ── Light mode defaults ── */
+@layer base {
+  :root {
+    --bg-page:    #f7f0eb;
+    --bg-panel:   #ffffff;
+    --bg-input:   #fdf6f0;
+    --border:     #e8d5c8;
+    --text-head:  #3e2820;
+    --text-body:  #5a3e36;
+    --text-muted: #a07868;
+    --nav-bg:     #ffffff;
+    --nav-border: #e8d5c8;
+    --nav-active: #7D5A50;
+  }
+
+  .dark {
+    --bg-page:    #1e1410;
+    --bg-panel:   #2a1e18;
+    --bg-input:   #1e1410;
+    --border:     #4a3028;
+    --text-head:  #FCDEC0;
+    --text-body:  #E5B299;
+    --text-muted: #B4846C;
+    --nav-bg:     #2a1e18;
+    --nav-border: #4a3028;
+    --nav-active: #FCDEC0;
+  }
+
+  body {
+    background-color: var(--bg-page);
+    color: var(--text-body);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+}
+
+/* ── Card ── */
+.card-solid {
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* ── Buttons ── */
+.btn-primary {
+  @apply w-full font-semibold py-3.5 px-4 rounded-xl transition duration-150 ease-in-out text-center shadow-sm flex items-center justify-center gap-2 select-none;
+  background-color: #B4846C;
+  color: #ffffff;
+}
+.btn-primary:hover  { background-color: #7D5A50; }
+.btn-primary:active { background-color: #6a4a42; }
+
+.btn-secondary {
+  @apply w-full font-semibold py-3.5 px-4 rounded-xl transition duration-150 ease-in-out text-center flex items-center justify-center gap-2 select-none;
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border);
+  color: var(--text-body);
+}
+.btn-secondary:hover { opacity: 0.85; }
+
+.btn-danger {
+  @apply w-full bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white font-semibold py-3.5 px-4 rounded-xl transition duration-150 ease-in-out text-center flex items-center justify-center gap-2 select-none;
+}
+
+.btn-success {
+  @apply w-full bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-semibold py-3.5 px-4 rounded-xl transition duration-150 ease-in-out text-center flex items-center justify-center gap-2 select-none;
+}
+
+/* ── Nav tabs ── */
+.nav-tab-active   { color: var(--nav-active); font-weight: 700; transform: scale(1.05); transition: all 0.2s; }
+.nav-tab-inactive { color: var(--text-muted); font-weight: 500; transition: all 0.2s; }
+.nav-tab-inactive:hover { color: var(--text-body); }
+
+/* ── Safe touch targets ── */
+.touch-target {
+  @apply min-h-[48px] min-w-[48px] flex items-center justify-center;
+}
+
+/* ── Map Dark Mode Filter ── */
+.map-tiles-dark {
+  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+}
+
+/* ── Accessibility / Simple Mode Global Overrides ── */
+.simple-mode body {
+  font-size: 1.15rem;
+}
+
+.simple-mode h1 {
+  font-size: 1.85rem !important;
+}
+
+.simple-mode h2, 
+.simple-mode .text-xl {
+  font-size: 1.6rem !important;
+}
+
+.simple-mode h3,
+.simple-mode .text-base {
+  font-size: 1.35rem !important;
+}
+
+.simple-mode p,
+.simple-mode .text-xs,
+.simple-mode .text-sm {
+  font-size: 1.05rem !important;
+  line-height: 1.5 !important;
+}
+
+.simple-mode span:not(.text-\[9px\]):not(.text-\[10px\]):not(.uppercase) {
+  font-size: 1.05rem !important;
+}
+
+.simple-mode input,
+.simple-mode select,
+.simple-mode textarea {
+  font-size: 1.1rem !important;
+  padding-top: 0.85rem !important;
+  padding-bottom: 0.85rem !important;
+  border-width: 2px !important;
+  border-color: var(--border) !important;
+}
+
+.simple-mode button {
+  font-size: 1.1rem !important;
+  min-height: 52px !important;
+  letter-spacing: 0.02em !important;
+}
+
+.simple-mode .card-solid {
+  border-width: 2px !important;
+  border-color: var(--border) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+.simple-mode .touch-target,
+.simple-mode nav button {
+  min-height: 56px !important;
+  min-width: 56px !important;
+}
+
