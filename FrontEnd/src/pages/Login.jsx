@@ -229,10 +229,10 @@ export default function Login() {
             </span>
             <div className="grid grid-cols-2 gap-2">
               {[
-                { label: 'Customer',      email: 'customer@numnum.com', roleType: 'customer', color: '#7D5A50' },
-                { label: 'Chef (Mario)',  email: 'chef@numnum.com',     roleType: 'chef',     color: '#B4846C' },
-                { label: 'Driver (Dave)', email: 'driver@numnum.com',   roleType: 'delivery', color: '#7D5A50' },
-                { label: 'Platform Admin',email: 'admin@numnum.com',    roleType: 'admin',    color: '#B4846C' },
+                { label: 'Customer', email: 'customer@numnum.com', roleType: 'customer', color: '#7D5A50' },
+                { label: 'Chef (Mario)', email: 'chef@numnum.com', roleType: 'chef', color: '#B4846C' },
+                { label: 'Driver (Dave)', email: 'driver@numnum.com', roleType: 'delivery', color: '#7D5A50' },
+                { label: 'Platform Admin', email: 'admin@numnum.com', roleType: 'admin', color: '#B4846C' },
               ].map(({ label, email: roleEmail, roleType, color }) => (
                 <button
                   key={roleEmail}

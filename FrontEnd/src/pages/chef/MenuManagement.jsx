@@ -85,7 +85,7 @@ export default function MenuManagement() {
   return (
     <div className="space-y-6 pb-8 select-none">
       <SEO title="Manage Chef Kitchen Menu" description="Create new menu offerings, update dish descriptions, customize prices, and toggle item availability status." />
-      
+
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-xl font-extrabold leading-none" style={{ color: 'var(--text-head)' }}>Menu Management</h2>
@@ -110,26 +110,40 @@ export default function MenuManagement() {
           {items.map(item => (
             <div
               key={item.id}
-              className={`card-solid flex items-center justify-between p-4 shadow-sm hover:shadow-md transition-all ${
-                !item.is_available ? 'opacity-70 border-dashed' : ''
-              }`}
+              className={`card-solid flex items-center gap-3 justify-between p-4 shadow-sm hover:shadow-md transition-all ${!item.is_available ? 'opacity-70 border-dashed' : ''
+                }`}
             >
+              {/* Item Image Thumbnail */}
+              <div
+                className="flex-shrink-0 w-14 h-14 rounded-xl overflow-hidden flex items-center justify-center text-2xl"
+                style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)' }}
+              >
+                {item.image ? (
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
+                  />
+                ) : null}
+                <span style={{ display: item.image ? 'none' : 'flex' }} className="w-full h-full items-center justify-center">🍽️</span>
+              </div>
+
               <div className="flex-1 pr-4">
                 <div className="flex items-center gap-2">
                   <h3 className="text-sm font-extrabold leading-tight" style={{ color: 'var(--text-head)' }}>{item.name}</h3>
-                  <span className={`text-[8px] font-black uppercase tracking-wider px-2 py-0.5 rounded text-white ${
-                    item.is_available ? 'bg-emerald-600' : 'bg-slate-400'
-                  }`}>
+                  <span className={`text-[8px] font-black uppercase tracking-wider px-2 py-0.5 rounded text-white ${item.is_available ? 'bg-emerald-600' : 'bg-slate-400'
+                    }`}>
                     {item.is_available ? 'In Stock' : 'Out of Stock'}
                   </span>
                 </div>
-                
+
                 <div className="flex items-center gap-2 text-[10px] font-bold mt-1" style={{ color: 'var(--text-muted)' }}>
                   <span className="px-2 py-0.5 rounded" style={{ backgroundColor: 'var(--bg-input)', color: 'var(--text-body)' }}>{item.category}</span>
                   <span>•</span>
                   <span style={{ color: '#7D5A50' }}>₹{Number(item.price).toFixed(2)}</span>
                 </div>
-                
+
                 <p className="text-xs mt-1.5 line-clamp-1" style={{ color: 'var(--text-muted)' }}>{item.description}</p>
               </div>
 
@@ -163,12 +177,12 @@ export default function MenuManagement() {
         <div className="fixed inset-0 z-50 bg-black/40 flex items-end justify-center p-4">
           <div className="max-w-md w-full rounded-3xl p-6 shadow-2xl space-y-4 max-h-[85vh] overflow-y-auto"
             style={{ backgroundColor: 'var(--bg-panel)' }}>
-            
+
             <div className="flex justify-between items-center pb-3" style={{ borderBottom: '1px solid var(--border)' }}>
               <h3 className="text-base font-extrabold" style={{ color: 'var(--text-head)' }}>
                 {editingItem ? 'Edit Dish Details' : 'Add New Dish'}
               </h3>
-              <button 
+              <button
                 onClick={() => setIsModalOpen(false)}
                 className="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer"
                 style={{ backgroundColor: 'var(--bg-input)', color: 'var(--text-muted)' }}

@@ -66,7 +66,7 @@ export default function DriverPayouts() {
   return (
     <div className="space-y-6 pb-8 select-none">
       <SEO title="Driver Earnings & Weekly Payouts" description="Review completed deliveries, track your trip earnings, and manage your partner payout methods." />
-      
+
       <div>
         <h2 className="text-xl font-extrabold leading-none" style={{ color: 'var(--text-head)' }}>Earnings Balance</h2>
         <p className="text-xs font-bold uppercase tracking-wider mt-1" style={{ color: 'var(--text-muted)' }}>Settlements & Payout history</p>

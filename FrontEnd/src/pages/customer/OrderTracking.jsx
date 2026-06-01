@@ -19,7 +19,7 @@ export default function OrderTracking() {
       const data = await api.customer.trackOrder(orderId);
       const fetchedOrder = data?.data || data;
       setOrder(fetchedOrder);
-      
+
       if (fetchedOrder.status === 'rejected') {
         const viewed = JSON.parse(localStorage.getItem('viewed_rejected_orders') || '[]');
         if (!viewed.includes(fetchedOrder.id)) {
@@ -76,8 +76,8 @@ export default function OrderTracking() {
 
   const status = order.status;
   const isCancelled = status === 'cancelled' || status === 'rejected';
-  
-  const step1_placed = true; 
+
+  const step1_placed = true;
   const step2_accepted = isCancelled ? false : ['accepted', 'preparing', 'ready', 'out_for_delivery', 'delivered'].includes(status);
   const step3_preparing = isCancelled ? false : ['preparing', 'ready', 'out_for_delivery', 'delivered'].includes(status);
   const step4_ready = isCancelled ? false : ['ready', 'out_for_delivery', 'delivered'].includes(status);
@@ -108,12 +108,11 @@ export default function OrderTracking() {
             <span className="text-[10px] font-extrabold uppercase tracking-wider block" style={{ color: 'var(--text-muted)' }}>Restaurant</span>
             <h3 className="text-base font-extrabold" style={{ color: 'var(--text-head)' }}>{order.restaurant_name}</h3>
           </div>
-          <span className={`text-[10px] font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-lg text-white shadow-sm ${
-            isCancelled ? 'bg-rose-600' :
-            status === 'delivered' ? 'bg-emerald-600' :
-            status === 'out_for_delivery' ? 'bg-indigo-600 animate-pulse' :
-            'bg-brand-500 animate-pulse'
-          }`} style={!['delivered','cancelled','rejected','out_for_delivery'].includes(status) ? { backgroundColor: '#B4846C' } : {}}>
+          <span className={`text-[10px] font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-lg text-white shadow-sm ${isCancelled ? 'bg-rose-600' :
+              status === 'delivered' ? 'bg-emerald-600' :
+                status === 'out_for_delivery' ? 'bg-indigo-600 animate-pulse' :
+                  'bg-brand-500 animate-pulse'
+            }`} style={!['delivered', 'cancelled', 'rejected', 'out_for_delivery'].includes(status) ? { backgroundColor: '#B4846C' } : {}}>
             {status.replace('_', ' ')}
           </span>
         </div>
@@ -141,7 +140,7 @@ export default function OrderTracking() {
           </h3>
 
           <div className="relative pl-8 space-y-7 before:absolute before:left-3.5 before:top-2 before:bottom-2 before:w-[2px]" style={{ '--tw-before-bg-color': 'var(--border)' }}>
-            
+
             <div className="relative">
               <div className="absolute -left-8 w-7.5 h-7.5 rounded-full flex items-center justify-center border text-xs font-bold"
                 style={step1_placed ? { backgroundColor: '#B4846C', borderColor: '#B4846C', color: '#fff' } : { backgroundColor: 'var(--bg-panel)', borderColor: 'var(--border)', color: 'var(--text-muted)' }}>

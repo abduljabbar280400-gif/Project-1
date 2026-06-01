@@ -14,6 +14,7 @@ class OrderItemResource extends JsonResource
             'order_id' => $this->order_id,
             'menu_item_id' => $this->menu_item_id,
             'name' => $this->menuItem ? $this->menuItem->name : 'Deleted Item',
+            'image' => $this->menuItem?->image,
             'quantity' => $this->quantity,
             'price' => (float) $this->price,
         ];

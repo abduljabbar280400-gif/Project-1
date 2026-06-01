@@ -15,11 +15,11 @@ const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
   const R = 6371; // Radius of the earth in km
   const dLat = (lat2 - lat1) * (Math.PI / 180);
   const dLon = (lon2 - lon1) * (Math.PI / 180);
-  const a = 
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) * 
-    Math.sin(dLon/2) * Math.sin(dLon/2); 
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c; // Distance in km
 };
 
@@ -30,13 +30,13 @@ export default function BrowseRestaurants() {
   const [activeOrders, setActiveOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCuisine, setSelectedCuisine] = useState('All');
 
   // Voice activated search state
   const [isListening, setIsListening] = useState(false);
-  
+
   // Geolocation and map state
   const { location, error: geoError } = useGeolocation();
   const [pincode, setPincode] = useState('');
@@ -154,8 +154,8 @@ export default function BrowseRestaurants() {
   };
 
   const filteredRestaurants = restaurants.filter(r => {
-    const matchesSearch = r.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          r.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = r.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      r.description.toLowerCase().includes(searchQuery.toLowerCase());
     const cuisine = r.cuisine_type || 'Fast Food';
     const matchesCuisine = selectedCuisine === 'All' || cuisine === selectedCuisine;
     const matchesCity = userCity && r.city ? r.city.toLowerCase() === userCity.toLowerCase() : true;
@@ -179,10 +179,10 @@ export default function BrowseRestaurants() {
   return (
     <div className="space-y-5 pb-8 select-none">
       <SEO title="Browse Delicious Kitchens & Cuisines" description="Explore high-quality home-cooked food options, fresh meal preps, and swift delivery from premium local chefs near you." />
-      
+
       {/* Dynamic Active Order Tracking Banner */}
       {activeOrders.length > 0 && (
-        <div 
+        <div
           onClick={() => navigate(`/customer/orders/${activeOrders[0].id}`)}
           className="text-white p-4 rounded-2xl flex items-center justify-between shadow-md cursor-pointer animate-pulse transition-all"
           style={{ backgroundColor: '#B4846C' }}
@@ -236,11 +236,10 @@ export default function BrowseRestaurants() {
               text2: '#3e2820'
             }
           ].map((slide, index) => (
-            <div 
+            <div
               key={index}
-              className={`absolute inset-0 p-5 transition-all duration-700 ease-in-out ${
-                index === currentSlide ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
-              }`}
+              className={`absolute inset-0 p-5 transition-all duration-700 ease-in-out ${index === currentSlide ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
+                }`}
               style={{ backgroundColor: slide.bg, color: slide.text2 }}
             >
               <div className="absolute -right-4 -bottom-4 opacity-10">
@@ -254,11 +253,10 @@ export default function BrowseRestaurants() {
           {/* Pagination Dots */}
           <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
             {[0, 1, 2].map((i) => (
-              <div 
-                key={i} 
-                className={`h-1.5 rounded-full transition-all duration-300 ${
-                  i === currentSlide ? 'w-4 bg-white' : 'w-1.5 bg-white/40'
-                }`}
+              <div
+                key={i}
+                className={`h-1.5 rounded-full transition-all duration-300 ${i === currentSlide ? 'w-4 bg-white' : 'w-1.5 bg-white/40'
+                  }`}
               />
             ))}
           </div>
@@ -286,9 +284,8 @@ export default function BrowseRestaurants() {
           <button
             type="button"
             onClick={startSpeechRecognition}
-            className={`flex items-center justify-center rounded-xl border transition-all cursor-pointer ${
-              isListening ? 'animate-pulse text-white bg-rose-600 border-rose-600' : 'bg-panel border text-brand-600'
-            }`}
+            className={`flex items-center justify-center rounded-xl border transition-all cursor-pointer ${isListening ? 'animate-pulse text-white bg-rose-600 border-rose-600' : 'bg-panel border text-brand-600'
+              }`}
             style={{
               backgroundColor: isListening ? '#e11d48' : 'var(--bg-panel)',
               borderColor: isListening ? '#e11d48' : 'var(--border)',
@@ -357,9 +354,8 @@ export default function BrowseRestaurants() {
                         navigate(`/customer/restaurants/${restaurant.id}`);
                       }
                     }}
-                    className={`card-solid transition-all cursor-pointer p-5 flex flex-col gap-3 relative border-2 ${
-                      !isKitchenOpen ? 'opacity-85' : ''
-                    }`}
+                    className={`card-solid transition-all cursor-pointer p-5 flex flex-col gap-3 relative border-2 ${!isKitchenOpen ? 'opacity-85' : ''
+                      }`}
                     style={{ borderColor: 'var(--border)' }}
                     id={`restaurant-${restaurant.id}`}
                   >
@@ -372,10 +368,9 @@ export default function BrowseRestaurants() {
                           {cuisine} Cuisine • {getDeliveryEstimate(restaurant.id)} delivery
                         </p>
                       </div>
-                      
-                      <span className={`text-xs font-black uppercase tracking-wider px-3.5 py-2 rounded-xl text-white shadow-sm whitespace-nowrap ${
-                        isKitchenOpen ? 'bg-emerald-600' : 'bg-slate-500'
-                      }`}>
+
+                      <span className={`text-xs font-black uppercase tracking-wider px-3.5 py-2 rounded-xl text-white shadow-sm whitespace-nowrap ${isKitchenOpen ? 'bg-emerald-600' : 'bg-slate-500'
+                        }`}>
                         {isKitchenOpen ? '🟢 OPEN' : '⚪ CLOSED'}
                       </span>
                     </div>
@@ -404,16 +399,15 @@ export default function BrowseRestaurants() {
                       navigate(`/customer/restaurants/${restaurant.id}`);
                     }
                   }}
-                  className={`card-solid transition-all cursor-pointer group flex flex-col p-0 overflow-hidden hover:shadow-md relative ${
-                    !isKitchenOpen ? 'opacity-85' : ''
-                  }`}
+                  className={`card-solid transition-all cursor-pointer group flex flex-col p-0 overflow-hidden hover:shadow-md relative ${!isKitchenOpen ? 'opacity-85' : ''
+                    }`}
                   id={`restaurant-${restaurant.id}`}
                 >
                   {/* Banner */}
                   <div className="h-28 relative flex items-center justify-center p-4" style={{ background: 'linear-gradient(135deg, #B4846C, #E5B299)' }}>
                     {restaurant.banner_image ? (
-                      <img 
-                        src={restaurant.banner_image} 
+                      <img
+                        src={restaurant.banner_image}
                         alt={restaurant.name}
                         className="absolute inset-0 w-full h-full object-cover opacity-80"
                       />
@@ -422,11 +416,10 @@ export default function BrowseRestaurants() {
                         <span className="text-white/20 text-5xl font-extrabold select-none tracking-tighter">Num Num</span>
                       </div>
                     )}
-                    
+
                     <div className="absolute top-3 left-3 flex gap-1.5">
-                      <span className={`text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-lg text-white shadow-sm ${
-                        isKitchenOpen ? 'bg-emerald-600' : 'bg-slate-500'
-                      }`}>
+                      <span className={`text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-lg text-white shadow-sm ${isKitchenOpen ? 'bg-emerald-600' : 'bg-slate-500'
+                        }`}>
                         {isKitchenOpen ? 'Open Now' : 'Closed'}
                       </span>
                     </div>

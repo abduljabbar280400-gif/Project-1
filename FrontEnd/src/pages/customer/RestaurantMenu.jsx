@@ -151,6 +151,21 @@ export default function RestaurantMenu() {
                 return (
                   <div key={item.id} className="p-4 rounded-2xl flex items-center justify-between shadow-sm transition-colors"
                     style={{ backgroundColor: 'var(--bg-panel)', border: '1px solid var(--border)' }}>
+                    {/* Dish Image Thumbnail */}
+                    <div
+                      className="flex-shrink-0 w-14 h-14 rounded-xl overflow-hidden flex items-center justify-center text-2xl mr-3"
+                      style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)' }}
+                    >
+                      {item.image ? (
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          className="w-full h-full object-cover"
+                          onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
+                        />
+                      ) : null}
+                      <span style={{ display: item.image ? 'none' : 'flex' }} className="w-full h-full items-center justify-center">🍽️</span>
+                    </div>
                     <div className="flex-1 pr-4">
                       <h4 className="text-sm font-extrabold" style={{ color: 'var(--text-head)' }}>{item.name}</h4>
                       <p className="text-xs font-semibold mt-0.5" style={{ color: 'var(--text-muted)' }}>₹{Number(item.price).toFixed(2)}</p>

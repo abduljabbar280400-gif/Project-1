@@ -83,7 +83,7 @@ export default function DeliveryDashboard() {
   return (
     <div className="space-y-6 pb-8 select-none">
       <SEO title="Driver Jobs & Active Deliveries" description="Find open delivery jobs in your area, pick up fresh orders from chefs, and navigate to client dropoffs." />
-      
+
       {/* Availability Status Box */}
       <div className="card-solid p-5 space-y-4">
         <div className="flex justify-between items-center">
@@ -112,9 +112,8 @@ export default function DeliveryDashboard() {
           </div>
           <button
             onClick={handleToggleOnline} disabled={profileLoading}
-            className={`px-4 py-2 rounded-lg text-xs font-black uppercase tracking-wider shadow-sm transition-colors cursor-pointer select-none ${
-              profile?.is_available ? 'bg-rose-600 hover:bg-rose-700 text-white' : 'bg-emerald-600 hover:bg-emerald-700 text-white'
-            }`}>
+            className={`px-4 py-2 rounded-lg text-xs font-black uppercase tracking-wider shadow-sm transition-colors cursor-pointer select-none ${profile?.is_available ? 'bg-rose-600 hover:bg-rose-700 text-white' : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+              }`}>
             {profile?.is_available ? 'Go Offline' : 'Go Online'}
           </button>
         </div>
@@ -162,16 +161,16 @@ export default function DeliveryDashboard() {
 
                 {/* Route Map for Active Job */}
                 <div className="mt-3">
-                  <DeliveryJobMap 
-                    pickupLocation={{ 
-                      lat: order.pickup_latitude || 51.505, 
-                      lng: order.pickup_longitude || -0.09, 
-                      name: order.restaurant_name 
+                  <DeliveryJobMap
+                    pickupLocation={{
+                      lat: order.pickup_latitude || 51.505,
+                      lng: order.pickup_longitude || -0.09,
+                      name: order.restaurant_name
                     }}
-                    dropoffLocation={{ 
-                      lat: order.dropoff_latitude || 51.51, 
-                      lng: order.dropoff_longitude || -0.1, 
-                      name: 'Customer' 
+                    dropoffLocation={{
+                      lat: order.dropoff_latitude || 51.51,
+                      lng: order.dropoff_longitude || -0.1,
+                      name: 'Customer'
                     }}
                     driverLocation={driverLocation?.latitude ? driverLocation : null}
                     routeMode={order.status === 'out_for_delivery' ? 'to_dropoff' : 'to_pickup'}
@@ -195,9 +194,8 @@ export default function DeliveryDashboard() {
                       </div>
                       <button onClick={() => handlePickup(order.id)}
                         disabled={!checklist[order.id]?.packed || !checklist[order.id]?.correct}
-                        className={`btn-primary w-full py-2.5 text-xs font-black uppercase tracking-wider flex items-center justify-center gap-1.5 cursor-pointer ${
-                          (!checklist[order.id]?.packed || !checklist[order.id]?.correct) ? 'opacity-50 cursor-not-allowed' : ''
-                        }`}><FiPlay /> Confirm Food Pickup</button>
+                        className={`btn-primary w-full py-2.5 text-xs font-black uppercase tracking-wider flex items-center justify-center gap-1.5 cursor-pointer ${(!checklist[order.id]?.packed || !checklist[order.id]?.correct) ? 'opacity-50 cursor-not-allowed' : ''
+                          }`}><FiPlay /> Confirm Food Pickup</button>
                     </div>
                   )}
                   {order.status === 'out_for_delivery' && (
@@ -249,19 +247,19 @@ export default function DeliveryDashboard() {
                   <span className="block"><span className="font-extrabold" style={{ color: 'var(--text-muted)' }}>From:</span> {order.restaurant_address}</span>
                   <span className="block"><span className="font-extrabold" style={{ color: 'var(--text-muted)' }}>To:</span> {order.delivery_address}</span>
                 </div>
-                
+
                 {/* Route Map Preview */}
                 <div className="mt-2">
-                  <DeliveryJobMap 
-                    pickupLocation={{ 
-                      lat: order.pickup_latitude || 51.505, 
-                      lng: order.pickup_longitude || -0.09, 
-                      name: order.restaurant_name 
+                  <DeliveryJobMap
+                    pickupLocation={{
+                      lat: order.pickup_latitude || 51.505,
+                      lng: order.pickup_longitude || -0.09,
+                      name: order.restaurant_name
                     }}
-                    dropoffLocation={{ 
-                      lat: order.dropoff_latitude || 51.51, 
-                      lng: order.dropoff_longitude || -0.1, 
-                      name: 'Customer' 
+                    dropoffLocation={{
+                      lat: order.dropoff_latitude || 51.51,
+                      lng: order.dropoff_longitude || -0.1,
+                      name: 'Customer'
                     }}
                     driverLocation={driverLocation?.latitude ? driverLocation : null}
                     routeMode="preview"

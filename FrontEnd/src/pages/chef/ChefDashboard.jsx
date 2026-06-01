@@ -11,7 +11,7 @@ export default function ChefDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [profileLoading, setProfileLoading] = useState(false);
-  
+
   const knownOrderIds = useRef(new Set());
 
   const playNewOrderChime = () => {
@@ -125,7 +125,7 @@ export default function ChefDashboard() {
   return (
     <div className="space-y-6 pb-8 select-none">
       <SEO title="Kitchen Operations Dashboard" description="Review incoming orders, process kitchen cooking pipelines, toggle online operations, and prepare fresh meals." />
-      
+
       {/* Overview Stats & Toggle */}
       <div className="card-solid p-5 space-y-4">
         <div className="flex justify-between items-center">
@@ -152,12 +152,10 @@ export default function ChefDashboard() {
         <div className="flex items-center justify-between p-3.5 rounded-xl" style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)' }}>
           <div className="flex items-center gap-3">
             <span className="relative flex h-3.5 w-3.5">
-              <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
-                restaurant?.is_open ? 'bg-emerald-400' : 'bg-slate-400'
-              }`}></span>
-              <span className={`relative inline-flex rounded-full h-3.5 w-3.5 ${
-                restaurant?.is_open ? 'bg-emerald-500' : 'bg-slate-500'
-              }`}></span>
+              <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${restaurant?.is_open ? 'bg-emerald-400' : 'bg-slate-400'
+                }`}></span>
+              <span className={`relative inline-flex rounded-full h-3.5 w-3.5 ${restaurant?.is_open ? 'bg-emerald-500' : 'bg-slate-500'
+                }`}></span>
             </span>
             <div>
               <span className="text-xs font-extrabold block leading-none" style={{ color: 'var(--text-head)' }}>
@@ -172,11 +170,10 @@ export default function ChefDashboard() {
           <button
             onClick={handleToggleOpen}
             disabled={profileLoading}
-            className={`px-4 py-2 rounded-lg text-xs font-black uppercase tracking-wider shadow-sm transition-colors cursor-pointer select-none ${
-              restaurant?.is_open 
-                ? 'bg-rose-600 hover:bg-rose-700 text-white' 
+            className={`px-4 py-2 rounded-lg text-xs font-black uppercase tracking-wider shadow-sm transition-colors cursor-pointer select-none ${restaurant?.is_open
+                ? 'bg-rose-600 hover:bg-rose-700 text-white'
                 : 'bg-emerald-600 hover:bg-emerald-700 text-white'
-            }`}
+              }`}
           >
             {restaurant?.is_open ? 'Go Offline' : 'Go Online'}
           </button>
@@ -215,12 +212,11 @@ export default function ChefDashboard() {
                     <div>
                       <div className="flex items-center gap-1.5">
                         <span className="text-sm font-black" style={{ color: 'var(--text-head)' }}>Order #{order.id}</span>
-                        <span className={`text-[9px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded text-white ${
-                          order.status === 'pending' ? 'bg-amber-500 animate-pulse' :
-                          order.status === 'accepted' ? 'bg-indigo-500' :
-                          order.status === 'preparing' ? '' :
-                          'bg-emerald-600'
-                        }`} style={order.status === 'preparing' ? { backgroundColor: '#B4846C' } : {}}>
+                        <span className={`text-[9px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded text-white ${order.status === 'pending' ? 'bg-amber-500 animate-pulse' :
+                            order.status === 'accepted' ? 'bg-indigo-500' :
+                              order.status === 'preparing' ? '' :
+                                'bg-emerald-600'
+                          }`} style={order.status === 'preparing' ? { backgroundColor: '#B4846C' } : {}}>
                           {order.status}
                         </span>
                       </div>
@@ -238,8 +234,23 @@ export default function ChefDashboard() {
                   <div className="space-y-1.5 p-2.5 rounded-xl" style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)' }}>
                     <span className="block text-[9px] font-extrabold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>DISH LIST</span>
                     {order.order_items?.map(item => (
-                      <div key={item.id} className="flex justify-between text-xs font-semibold" style={{ color: 'var(--text-body)' }}>
-                        <span>{item.name}</span>
+                      <div key={item.id} className="flex items-center gap-2.5 text-xs font-semibold" style={{ color: 'var(--text-body)' }}>
+                        {/* Dish Image Thumbnail */}
+                        <div
+                          className="flex-shrink-0 w-9 h-9 rounded-lg overflow-hidden flex items-center justify-center"
+                          style={{ backgroundColor: 'var(--border)', border: '1px solid var(--border)' }}
+                        >
+                          {item.image ? (
+                            <img
+                              src={item.image}
+                              alt={item.name}
+                              className="w-full h-full object-cover"
+                              onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
+                            />
+                          ) : null}
+                          <span style={{ display: item.image ? 'none' : 'flex', fontSize: '14px' }} className="w-full h-full items-center justify-center">🍽️</span>
+                        </div>
+                        <span className="flex-1 truncate">{item.name}</span>
                         <span className="font-black text-sm px-2 py-0.5 rounded-md"
                           style={{ backgroundColor: 'var(--border)', color: 'var(--text-head)' }}>x{item.quantity}</span>
                       </div>

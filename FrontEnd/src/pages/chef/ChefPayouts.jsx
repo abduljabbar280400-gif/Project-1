@@ -66,7 +66,7 @@ export default function ChefPayouts() {
   return (
     <div className="space-y-6 pb-8 select-none">
       <SEO title="Chef Earning & Payout Settings" description="Analyze weekly menu performance, request earnings payouts, and inspect completed transaction summaries." />
-      
+
       <div>
         <h2 className="text-xl font-extrabold leading-none" style={{ color: 'var(--text-head)' }}>Earnings Balance</h2>
         <p className="text-xs font-bold uppercase tracking-wider mt-1" style={{ color: 'var(--text-muted)' }}>Platform settlements & Payout history</p>

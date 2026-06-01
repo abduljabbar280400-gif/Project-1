@@ -2,18 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { api } from '../services/api';
 import LoadingSpinner from '../components/LoadingSpinner';
 import SEO from '../components/SEO';
-import { 
-  FiLock, 
-  FiMapPin, 
-  FiPlus, 
-  FiTrash2, 
-  FiEdit2, 
-  FiCheck, 
-  FiInfo, 
-  FiTruck, 
-  FiCoffee, 
-  FiUser, 
-  FiChevronDown 
+import {
+  FiLock,
+  FiMapPin,
+  FiPlus,
+  FiTrash2,
+  FiEdit2,
+  FiCheck,
+  FiInfo,
+  FiTruck,
+  FiCoffee,
+  FiUser,
+  FiChevronDown
 } from 'react-icons/fi';
 import LocationPickerMap from '../components/maps/LocationPickerMap';
 
@@ -48,7 +48,7 @@ export default function Profile() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
-  
+
   // Profile photo state
   const [profilePhotoUrl, setProfilePhotoUrl] = useState('');
 
@@ -146,10 +146,10 @@ export default function Profile() {
     try {
       const res = await api.auth.updateProfilePhoto({ profile_photo: profilePhotoUrl });
       showMsg('success', 'Profile photo updated successfully!');
-      
+
       const updatedUser = { ...user, profile_photo: res.user?.profile_photo || res.profile_photo };
       setUser(updatedUser);
-      
+
       const stored = JSON.parse(localStorage.getItem('num_user') || '{}');
       stored.profile_photo = res.user?.profile_photo || res.profile_photo;
       localStorage.setItem('num_user', JSON.stringify(stored));
@@ -179,7 +179,7 @@ export default function Profile() {
     try {
       const res = await api.chef.updateProfile(chefForm);
       showMsg('success', 'Kitchen profile updated successfully!');
-      
+
       // Update local storage representation in case user name matches kitchen
       const stored = JSON.parse(localStorage.getItem('num_user') || '{}');
       if (stored.restaurant) {
@@ -205,7 +205,7 @@ export default function Profile() {
     try {
       const res = await api.delivery.updateProfile(deliveryForm);
       showMsg('success', 'Delivery profile updated successfully!');
-      
+
       // Update local storage
       const stored = JSON.parse(localStorage.getItem('num_user') || '{}');
       if (stored.delivery_profile) {
@@ -244,7 +244,7 @@ export default function Profile() {
       setAddressForm({ door_no: '', street: '', area: '', landmark: '', pincode: '', city: '', latitude: null, longitude: null });
       setShowAddressForm(false);
       setEditingAddressId(null);
-      
+
       // Refresh list
       const addressData = await api.customer.getAddresses();
       setAddresses(addressData?.data || addressData || []);
@@ -305,7 +305,7 @@ export default function Profile() {
   return (
     <div className="space-y-6 pb-20 select-none">
       <SEO title="My Account Profile" description="Manage your personal details, primary delivery address book, driving licence, and chef kitchen settings." />
-      
+
       {/* Page Title Header */}
       <div>
         <h2 className="text-lg font-extrabold leading-none" style={headingStyle}>Account Profile</h2>
@@ -314,11 +314,10 @@ export default function Profile() {
 
       {/* Dynamic Status Message Alert */}
       {message.text && (
-        <div className={`p-4 rounded-xl border text-xs font-bold shadow-sm transition-all ${
-          message.type === 'success' 
-            ? 'bg-emerald-50 border-emerald-200 text-emerald-800' 
+        <div className={`p-4 rounded-xl border text-xs font-bold shadow-sm transition-all ${message.type === 'success'
+            ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
             : 'bg-rose-50 border-rose-200 text-rose-800'
-        }`}>
+          }`}>
           {message.text}
         </div>
       )}
@@ -328,9 +327,9 @@ export default function Profile() {
         <div className="flex flex-col items-center justify-center pb-4" style={{ borderBottom: '1px solid var(--border)' }}>
           <div className="relative mb-3">
             {user?.profile_photo ? (
-              <img 
-                src={user.profile_photo} 
-                alt={user.name} 
+              <img
+                src={user.profile_photo}
+                alt={user.name}
                 className="w-24 h-24 rounded-full object-cover shadow-md"
                 style={{ border: '2px solid #B4846C' }}
               />
@@ -346,16 +345,16 @@ export default function Profile() {
             style={{ backgroundColor: '#B4846C' }}>
             {user?.role} Account
           </span>
-          
+
           <form onSubmit={handleProfilePhotoSave} className="w-full mt-4 space-y-1.5 pt-3" style={{ borderTop: '1px solid var(--border)' }}>
             <label htmlFor="input-profile-photo" className="block text-[9px] font-bold uppercase tracking-wider" style={labelStyle}>EDIT PROFILE PHOTO URL</label>
             <div className="flex gap-2">
-              <input 
-                type="url" 
+              <input
+                type="url"
                 id="input-profile-photo"
-                value={profilePhotoUrl} 
-                onChange={e => setProfilePhotoUrl(e.target.value)} 
-                placeholder="https://example.com/avatar.jpg" 
+                value={profilePhotoUrl}
+                onChange={e => setProfilePhotoUrl(e.target.value)}
+                placeholder="https://example.com/avatar.jpg"
                 className="flex-1 rounded-xl px-3.5 py-2 text-xs font-semibold outline-none transition-colors"
                 style={inputStyles}
                 onFocus={inputFocus}
@@ -381,10 +380,10 @@ export default function Profile() {
             <div className="flex justify-between items-center mb-1">
               <span className="text-[10px] font-bold uppercase tracking-wider" style={labelStyle}>FULL NAME</span>
             </div>
-            <input 
-              type="text" 
-              value={user?.name || ''} 
-              disabled 
+            <input
+              type="text"
+              value={user?.name || ''}
+              disabled
               className="w-full rounded-xl px-4 py-2.5 text-xs font-semibold select-none cursor-not-allowed"
               style={disabledInputStyles}
             />
@@ -394,10 +393,10 @@ export default function Profile() {
             <div className="flex justify-between items-center mb-1">
               <span className="text-[10px] font-bold uppercase tracking-wider" style={labelStyle}>EMAIL ADDRESS</span>
             </div>
-            <input 
-              type="email" 
-              value={user?.email || ''} 
-              disabled 
+            <input
+              type="email"
+              value={user?.email || ''}
+              disabled
               className="w-full rounded-xl px-4 py-2.5 text-xs font-semibold select-none cursor-not-allowed"
               style={disabledInputStyles}
             />
@@ -407,10 +406,10 @@ export default function Profile() {
             <div className="flex justify-between items-center mb-1">
               <span className="text-[10px] font-bold uppercase tracking-wider" style={labelStyle}>PHONE NUMBER</span>
             </div>
-            <input 
-              type="text" 
-              value={user?.phone || ''} 
-              disabled 
+            <input
+              type="text"
+              value={user?.phone || ''}
+              disabled
               className="w-full rounded-xl px-4 py-2.5 text-xs font-semibold select-none cursor-not-allowed"
               style={disabledInputStyles}
             />
@@ -431,8 +430,8 @@ export default function Profile() {
           <div className="space-y-3.5">
             <div>
               <span className="block text-[10px] font-bold uppercase tracking-wider mb-1" style={labelStyle}>KITCHEN NAME</span>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 value={chefForm.name}
                 onChange={e => setChefForm(prev => ({ ...prev, name: e.target.value }))}
                 placeholder="Enter your kitchen name"
@@ -466,7 +465,7 @@ export default function Profile() {
 
             <div>
               <span className="block text-[10px] font-bold uppercase tracking-wider mb-1" style={labelStyle}>KITCHEN BIO / DESCRIPTION</span>
-              <textarea 
+              <textarea
                 rows={3}
                 value={chefForm.description}
                 onChange={e => setChefForm(prev => ({ ...prev, description: e.target.value }))}
@@ -480,8 +479,8 @@ export default function Profile() {
 
             <div>
               <span className="block text-[10px] font-bold uppercase tracking-wider mb-1" style={labelStyle}>KITCHEN BANNER / COVER PHOTO URL</span>
-              <input 
-                type="url" 
+              <input
+                type="url"
                 value={chefForm.banner_image}
                 onChange={e => setChefForm(prev => ({ ...prev, banner_image: e.target.value }))}
                 placeholder="Enter cover photo image URL (https://...)"
@@ -499,8 +498,8 @@ export default function Profile() {
               <div className="grid grid-cols-2 gap-3">
                 <div className="col-span-2">
                   <span className="block text-[9px] font-bold uppercase tracking-wider mb-1" style={labelStyle}>DOOR NO / FLAT NO / FLOOR *</span>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={chefForm.door_no}
                     onChange={e => setChefForm(prev => ({ ...prev, door_no: e.target.value }))}
                     placeholder="e.g. Door 45, Ground Floor"
@@ -513,8 +512,8 @@ export default function Profile() {
 
                 <div className="col-span-2">
                   <span className="block text-[9px] font-bold uppercase tracking-wider mb-1" style={labelStyle}>STREET ADDRESS *</span>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={chefForm.street}
                     onChange={e => setChefForm(prev => ({ ...prev, street: e.target.value }))}
                     placeholder="e.g. Baker Street"
@@ -527,8 +526,8 @@ export default function Profile() {
 
                 <div>
                   <span className="block text-[9px] font-bold uppercase tracking-wider mb-1" style={labelStyle}>AREA *</span>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={chefForm.area}
                     onChange={e => setChefForm(prev => ({ ...prev, area: e.target.value }))}
                     placeholder="e.g. Marylebone"
@@ -541,8 +540,8 @@ export default function Profile() {
 
                 <div>
                   <span className="block text-[9px] font-bold uppercase tracking-wider mb-1" style={labelStyle}>LANDMARK (OPTIONAL)</span>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={chefForm.landmark}
                     onChange={e => setChefForm(prev => ({ ...prev, landmark: e.target.value }))}
                     placeholder="e.g. Opposite Park"
@@ -554,8 +553,8 @@ export default function Profile() {
 
                 <div>
                   <span className="block text-[9px] font-bold uppercase tracking-wider mb-1" style={labelStyle}>PINCODE *</span>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={chefForm.pincode}
                     onChange={e => setChefForm(prev => ({ ...prev, pincode: e.target.value }))}
                     placeholder="e.g. NW1 6XE"
@@ -568,8 +567,8 @@ export default function Profile() {
 
                 <div>
                   <span className="block text-[9px] font-bold uppercase tracking-wider mb-1" style={labelStyle}>CITY *</span>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={chefForm.city}
                     onChange={e => setChefForm(prev => ({ ...prev, city: e.target.value }))}
                     placeholder="e.g. London"
@@ -581,7 +580,7 @@ export default function Profile() {
                 </div>
 
                 <div className="col-span-2 pt-2">
-                  <LocationPickerMap 
+                  <LocationPickerMap
                     pincode={chefForm.pincode}
                     initialLocation={{ latitude: chefForm.latitude, longitude: chefForm.longitude }}
                     onLocationSelect={(lat, lng) => setChefForm(prev => ({ ...prev, latitude: lat, longitude: lng }))}
@@ -631,8 +630,8 @@ export default function Profile() {
 
             <div>
               <span className="block text-[10px] font-bold uppercase tracking-wider mb-1" style={labelStyle}>DRIVING LICENCE NUMBER</span>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 value={deliveryForm.licence_number}
                 onChange={e => setDeliveryForm(prev => ({ ...prev, licence_number: e.target.value }))}
                 placeholder="Enter your licence number"
@@ -658,7 +657,7 @@ export default function Profile() {
       {/* 3. CUSTOMER ADDRESS BOOK */}
       {user?.role === 'customer' && (
         <div className="space-y-4">
-          
+
           <div className="flex justify-between items-center">
             <span className="text-xs font-bold uppercase tracking-wider" style={labelStyle}>Address Book</span>
             <button
@@ -685,8 +684,8 @@ export default function Profile() {
               <div className="grid grid-cols-2 gap-3">
                 <div className="col-span-2">
                   <span className="block text-[9px] font-bold uppercase tracking-widest mb-1" style={labelStyle}>DOOR NO / FLAT NO / FLOOR *</span>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={addressForm.door_no}
                     onChange={e => setAddressForm(prev => ({ ...prev, door_no: e.target.value }))}
                     placeholder="e.g. Flat 302, 3rd Floor"
@@ -699,8 +698,8 @@ export default function Profile() {
 
                 <div className="col-span-2">
                   <span className="block text-[9px] font-bold uppercase tracking-widest mb-1" style={labelStyle}>STREET ADDRESS *</span>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={addressForm.street}
                     onChange={e => setAddressForm(prev => ({ ...prev, street: e.target.value }))}
                     placeholder="e.g. Park Avenue Road"
@@ -713,8 +712,8 @@ export default function Profile() {
 
                 <div>
                   <span className="block text-[9px] font-bold uppercase tracking-widest mb-1" style={labelStyle}>AREA *</span>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={addressForm.area}
                     onChange={e => setAddressForm(prev => ({ ...prev, area: e.target.value }))}
                     placeholder="e.g. Downtown"
@@ -727,8 +726,8 @@ export default function Profile() {
 
                 <div>
                   <span className="block text-[9px] font-bold uppercase tracking-widest mb-1" style={labelStyle}>LANDMARK (OPTIONAL)</span>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={addressForm.landmark}
                     onChange={e => setAddressForm(prev => ({ ...prev, landmark: e.target.value }))}
                     placeholder="e.g. Next to Grand Mall"
@@ -740,8 +739,8 @@ export default function Profile() {
 
                 <div>
                   <span className="block text-[9px] font-bold uppercase tracking-widest mb-1" style={labelStyle}>PINCODE *</span>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={addressForm.pincode}
                     onChange={e => setAddressForm(prev => ({ ...prev, pincode: e.target.value }))}
                     placeholder="e.g. 560001"
@@ -754,8 +753,8 @@ export default function Profile() {
 
                 <div>
                   <span className="block text-[9px] font-bold uppercase tracking-widest mb-1" style={labelStyle}>CITY *</span>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={addressForm.city}
                     onChange={e => setAddressForm(prev => ({ ...prev, city: e.target.value }))}
                     placeholder="e.g. Bangalore"
@@ -767,7 +766,7 @@ export default function Profile() {
                 </div>
 
                 <div className="col-span-2 pt-2">
-                  <LocationPickerMap 
+                  <LocationPickerMap
                     pincode={addressForm.pincode}
                     initialLocation={{ latitude: addressForm.latitude, longitude: addressForm.longitude }}
                     onLocationSelect={(lat, lng) => setAddressForm(prev => ({ ...prev, latitude: lat, longitude: lng }))}
@@ -808,7 +807,7 @@ export default function Profile() {
           ) : (
             <div className="space-y-3">
               {addresses.map(addr => (
-                <div 
+                <div
                   key={addr.id}
                   className="card-solid p-4 transition-all relative flex flex-col justify-between gap-3"
                   style={{ borderColor: addr.is_selected ? '#B4846C' : 'var(--border)' }}
@@ -826,7 +825,7 @@ export default function Profile() {
                       <FiMapPin size={14} style={{ color: addr.is_selected ? '#B4846C' : 'var(--text-muted)' }} />
                       <span>{addr.door_no}, {addr.street}</span>
                     </div>
-                    
+
                     <p className="text-[11px] font-semibold pl-5 leading-tight" style={subTextStyle}>
                       {addr.area}
                       {addr.landmark && `, Near ${addr.landmark}`}

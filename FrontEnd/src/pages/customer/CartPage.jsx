@@ -29,7 +29,7 @@ export default function CartPage() {
       const data = await api.customer.getAddresses();
       const addrList = data?.data || data || [];
       setAddresses(addrList);
-      
+
       const active = addrList.find(a => a.is_selected);
       if (active) {
         setDeliveryAddress(formatFullAddress(active));
@@ -86,7 +86,7 @@ export default function CartPage() {
     if (!deliveryAddress.trim()) { setError('Delivery address is required.'); return; }
     setSubmitting(true); setError('');
     const selectedAddressObj = addresses.find(a => formatFullAddress(a) === deliveryAddress);
-    
+
     const orderPayload = {
       restaurant_id: cart.restaurant_id,
       delivery_address: deliveryAddress,
@@ -239,12 +239,12 @@ export default function CartPage() {
                       key={addr.id}
                       onClick={() => setDeliveryAddress(fullStr)}
                       className="p-3.5 rounded-xl border text-left cursor-pointer transition-all select-none relative"
-                      style={isSelected 
-                        ? { borderColor: '#B4846C', backgroundColor: 'var(--bg-input)' } 
+                      style={isSelected
+                        ? { borderColor: '#B4846C', backgroundColor: 'var(--bg-input)' }
                         : { borderColor: 'var(--border)', backgroundColor: 'var(--bg-panel)' }}
                     >
                       <div className="flex items-start gap-2.5">
-                        <input 
+                        <input
                           type="radio" name="delivery_address_radio" checked={isSelected}
                           onChange={() => setDeliveryAddress(fullStr)}
                           className="mt-0.5 accent-brand-500"
