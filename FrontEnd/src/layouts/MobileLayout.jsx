@@ -9,6 +9,7 @@ export default function MobileLayout({ children, role }) {
   const navigate = useNavigate();
   const location = useLocation();
   const user = JSON.parse(localStorage.getItem('num_user') || '{}');
+  const activeRole = role || user.role;
   const { isDark, toggleTheme, isSimpleMode, toggleSimpleMode } = useTheme();
 
   const handleLogout = async () => {
@@ -24,7 +25,7 @@ export default function MobileLayout({ children, role }) {
 
   // Define tab navigation based on role
   const getTabs = () => {
-    switch (role) {
+    switch (activeRole) {
       case 'customer':
         return [
           { label: 'Browse', path: '/customer/browse', icon: <FiHome size={22} /> },
@@ -72,7 +73,7 @@ export default function MobileLayout({ children, role }) {
             </div>
             <div>
               <h1 className="text-base font-extrabold leading-none" style={{ color: 'var(--text-head)' }}>Num Num</h1>
-              <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>{role} hub</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>{activeRole} hub</span>
             </div>
           </div>
 
@@ -117,6 +118,7 @@ export default function MobileLayout({ children, role }) {
               onMouseEnter={e => e.currentTarget.style.color = '#e11d48'}
               onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}
               title="Logout"
+              aria-label="Logout"
               id="btn-logout"
             >
               <FiLogOut size={18} />
@@ -144,8 +146,9 @@ export default function MobileLayout({ children, role }) {
                   onClick={() => navigate(tab.path)}
                   className={`flex flex-col items-center justify-center w-16 h-14 ${isActive ? 'nav-tab-active' : 'nav-tab-inactive'}`}
                   id={`nav-tab-${tab.label.toLowerCase().replace(' ', '-')}`}
+                  aria-label={tab.label}
                 >
-                  <div className="mb-1 touch-target flex items-center justify-center">{tab.icon}</div>
+                  <div className="mb-1 touch-target flex items-center justify-center" aria-hidden="true">{tab.icon}</div>
                   <span className="text-[10px] uppercase tracking-wider">{tab.label}</span>
                 </button>
               );

@@ -4,6 +4,7 @@ import { api } from '../services/api';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { useTheme } from '../context/ThemeContext';
 import { FiSun, FiMoon, FiEye, FiEyeOff } from 'react-icons/fi';
+import SEO from '../components/SEO';
 
 export default function Register() {
   const navigate = useNavigate();
@@ -82,6 +83,7 @@ export default function Register() {
 
   return (
     <div className="min-h-screen flex flex-col font-sans" style={{ backgroundColor: 'var(--bg-page)' }}>
+      <SEO title="Join Num Num - Create a New Account" description="Sign up as a customer, register as a chef, or join our driver fleet to earn on the Num Num platform." />
       <div
         className="max-w-md w-full min-h-screen flex flex-col mx-auto justify-center px-6 py-8 relative shadow-2xl border-x"
         style={{ backgroundColor: 'var(--bg-page)', borderColor: 'var(--border)' }}
@@ -154,11 +156,12 @@ export default function Register() {
 
             {/* Full Name */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-muted)' }}>
+              <label htmlFor="input-name" className="block text-xs font-bold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-muted)' }}>
                 Full Name
               </label>
               <input
                 type="text"
+                id="input-name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="w-full rounded-xl px-4 py-2.5 font-medium text-sm outline-none transition-all"
@@ -172,11 +175,12 @@ export default function Register() {
 
             {/* Email */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-muted)' }}>
+              <label htmlFor="input-email" className="block text-xs font-bold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-muted)' }}>
                 Email Address
               </label>
               <input
                 type="email"
+                id="input-email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full rounded-xl px-4 py-2.5 font-medium text-sm outline-none transition-all"
@@ -190,11 +194,12 @@ export default function Register() {
 
             {/* Phone */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-muted)' }}>
+              <label htmlFor="input-phone" className="block text-xs font-bold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-muted)' }}>
                 Phone Number
               </label>
               <input
                 type="tel"
+                id="input-phone"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 className="w-full rounded-xl px-4 py-2.5 font-medium text-sm outline-none transition-all"
@@ -208,12 +213,13 @@ export default function Register() {
 
             {/* Password */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-muted)' }}>
+              <label htmlFor="input-password" className="block text-xs font-bold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-muted)' }}>
                 Password
               </label>
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
+                  id="input-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full rounded-xl pl-4 pr-12 py-2.5 font-medium text-sm outline-none transition-all"
@@ -267,12 +273,13 @@ export default function Register() {
 
             {/* Confirm Password */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-muted)' }}>
+              <label htmlFor="input-confirm-password" className="block text-xs font-bold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-muted)' }}>
                 Confirm Password
               </label>
               <div className="relative">
                 <input
                   type={showConfirmPassword ? "text" : "password"}
+                  id="input-confirm-password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   className="w-full rounded-xl pl-4 pr-12 py-2.5 font-medium text-sm outline-none transition-all"

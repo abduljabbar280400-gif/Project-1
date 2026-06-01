@@ -6,6 +6,7 @@ import NetworkError from '../../components/NetworkError';
 import { FiSearch, FiTruck, FiCoffee, FiTrendingUp, FiMapPin, FiMic, FiMicOff } from 'react-icons/fi';
 import { useGeolocation } from '../../hooks/useGeolocation';
 import { useTheme } from '../../context/ThemeContext';
+import SEO from '../../components/SEO';
 
 const CUISINES = ['All', 'Italian', 'Fast Food', 'Burgers', 'Dessert', 'Indian', 'Healthy'];
 
@@ -177,6 +178,7 @@ export default function BrowseRestaurants() {
 
   return (
     <div className="space-y-5 pb-8 select-none">
+      <SEO title="Browse Delicious Kitchens & Cuisines" description="Explore high-quality home-cooked food options, fresh meal preps, and swift delivery from premium local chefs near you." />
       
       {/* Dynamic Active Order Tracking Banner */}
       {activeOrders.length > 0 && (
@@ -268,6 +270,7 @@ export default function BrowseRestaurants() {
         <div className="flex gap-2">
           <div className="relative flex-1">
             <FiSearch size={18} className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: 'var(--text-muted)' }} />
+            <label htmlFor="search-restaurants" className="sr-only">Search kitchens, dishes, cuisines...</label>
             <input
               type="text"
               value={searchQuery}

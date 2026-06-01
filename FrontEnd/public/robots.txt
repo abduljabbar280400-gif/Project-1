@@ -1,0 +1,10 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Exclude dynamic admin or profile areas from basic indexing if preferred
+Disallow: /admin/
+Disallow: /chef/
+Disallow: /delivery/
+
+Sitemap: https://numnum.example.com/sitemap.xml

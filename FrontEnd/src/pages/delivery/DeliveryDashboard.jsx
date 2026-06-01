@@ -5,6 +5,7 @@ import NetworkError from '../../components/NetworkError';
 import { FiTruck, FiMapPin, FiPlay, FiCheck, FiCoffee, FiActivity } from 'react-icons/fi';
 import { useGeolocation } from '../../hooks/useGeolocation';
 import DeliveryJobMap from '../../components/maps/DeliveryJobMap';
+import SEO from '../../components/SEO';
 
 export default function DeliveryDashboard() {
   const [profile, setProfile] = useState(null);
@@ -81,6 +82,7 @@ export default function DeliveryDashboard() {
 
   return (
     <div className="space-y-6 pb-8 select-none">
+      <SEO title="Driver Jobs & Active Deliveries" description="Find open delivery jobs in your area, pick up fresh orders from chefs, and navigate to client dropoffs." />
       
       {/* Availability Status Box */}
       <div className="card-solid p-5 space-y-4">

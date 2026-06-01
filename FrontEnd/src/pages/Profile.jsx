@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../services/api';
 import LoadingSpinner from '../components/LoadingSpinner';
+import SEO from '../components/SEO';
 import { 
   FiLock, 
   FiMapPin, 
@@ -303,6 +304,7 @@ export default function Profile() {
 
   return (
     <div className="space-y-6 pb-20 select-none">
+      <SEO title="My Account Profile" description="Manage your personal details, primary delivery address book, driving licence, and chef kitchen settings." />
       
       {/* Page Title Header */}
       <div>
@@ -346,10 +348,11 @@ export default function Profile() {
           </span>
           
           <form onSubmit={handleProfilePhotoSave} className="w-full mt-4 space-y-1.5 pt-3" style={{ borderTop: '1px solid var(--border)' }}>
-            <span className="block text-[9px] font-bold uppercase tracking-wider" style={labelStyle}>EDIT PROFILE PHOTO URL</span>
+            <label htmlFor="input-profile-photo" className="block text-[9px] font-bold uppercase tracking-wider" style={labelStyle}>EDIT PROFILE PHOTO URL</label>
             <div className="flex gap-2">
               <input 
                 type="url" 
+                id="input-profile-photo"
                 value={profilePhotoUrl} 
                 onChange={e => setProfilePhotoUrl(e.target.value)} 
                 placeholder="https://example.com/avatar.jpg" 

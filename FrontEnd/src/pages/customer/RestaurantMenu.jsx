@@ -4,6 +4,7 @@ import { api } from '../../services/api';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import NetworkError from '../../components/NetworkError';
 import { FiArrowLeft, FiPlus, FiMinus, FiShoppingBag } from 'react-icons/fi';
+import SEO from '../../components/SEO';
 
 export default function RestaurantMenu() {
   const { restaurantId } = useParams();
@@ -103,11 +104,13 @@ export default function RestaurantMenu() {
 
   return (
     <div className="space-y-6 pb-28 relative select-none">
+      <SEO title={restaurant?.name ? `${restaurant.name} Menu` : 'Chef Kitchen Menu'} description={restaurant?.description || 'Browse high-quality chef prepared menus, fresh operational dining dishes, and order hot meals.'} />
       <div className="flex items-center gap-3">
         <button
           onClick={() => navigate('/customer/browse')}
           className="touch-target rounded-xl shadow-sm cursor-pointer"
           style={{ backgroundColor: 'var(--bg-panel)', border: '1px solid var(--border)', color: 'var(--text-body)' }}
+          aria-label="Back to browse kitchens"
         >
           <FiArrowLeft size={18} />
         </button>

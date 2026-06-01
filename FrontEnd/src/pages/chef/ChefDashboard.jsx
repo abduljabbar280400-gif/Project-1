@@ -3,6 +3,7 @@ import { api } from '../../services/api';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import NetworkError from '../../components/NetworkError';
 import { FiCoffee, FiAlertCircle, FiVolume2, FiCheck, FiPlay, FiTrash2, FiClock } from 'react-icons/fi';
+import SEO from '../../components/SEO';
 
 export default function ChefDashboard() {
   const [restaurant, setRestaurant] = useState(null);
@@ -123,6 +124,7 @@ export default function ChefDashboard() {
 
   return (
     <div className="space-y-6 pb-8 select-none">
+      <SEO title="Kitchen Operations Dashboard" description="Review incoming orders, process kitchen cooking pipelines, toggle online operations, and prepare fresh meals." />
       
       {/* Overview Stats & Toggle */}
       <div className="card-solid p-5 space-y-4">

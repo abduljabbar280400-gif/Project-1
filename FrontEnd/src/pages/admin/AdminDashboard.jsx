@@ -3,6 +3,7 @@ import { api } from '../../services/api';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import NetworkError from '../../components/NetworkError';
 import { FiCheckCircle, FiAlertTriangle, FiSliders, FiShoppingBag, FiTruck } from 'react-icons/fi';
+import SEO from '../../components/SEO';
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('restaurants');
@@ -57,6 +58,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-6 pb-8 select-none">
+      <SEO title="Platform Administration Portal" description="Supervise partner chefs, review pending payouts, update settings, and manage platform configurations." />
       
       <div>
         <h2 className="text-xl font-extrabold leading-none font-sans" style={{ color: 'var(--text-head)' }}>Platform Operations Panel</h2>

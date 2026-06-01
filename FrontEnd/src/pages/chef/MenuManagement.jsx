@@ -3,6 +3,7 @@ import { api } from '../../services/api';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import NetworkError from '../../components/NetworkError';
 import { FiPlus, FiEdit2, FiTrash2, FiX } from 'react-icons/fi';
+import SEO from '../../components/SEO';
 
 const inputStyles = { backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)', color: 'var(--text-head)' };
 const labelStyle = { color: 'var(--text-muted)' };
@@ -83,6 +84,7 @@ export default function MenuManagement() {
 
   return (
     <div className="space-y-6 pb-8 select-none">
+      <SEO title="Manage Chef Kitchen Menu" description="Create new menu offerings, update dish descriptions, customize prices, and toggle item availability status." />
       
       <div className="flex justify-between items-center">
         <div>
@@ -137,6 +139,7 @@ export default function MenuManagement() {
                   className="w-10 h-10 rounded-xl flex items-center justify-center cursor-pointer shadow-sm"
                   style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)', color: 'var(--text-body)' }}
                   title="Edit item"
+                  aria-label={`Edit ${item.name}`}
                 >
                   <FiEdit2 size={14} />
                 </button>
@@ -145,6 +148,7 @@ export default function MenuManagement() {
                   className="w-10 h-10 rounded-xl flex items-center justify-center cursor-pointer shadow-sm text-rose-500"
                   style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)' }}
                   title="Delete item"
+                  aria-label={`Delete ${item.name}`}
                 >
                   <FiTrash2 size={14} />
                 </button>
@@ -175,8 +179,8 @@ export default function MenuManagement() {
 
             <form onSubmit={handleFormSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider mb-1.5" style={labelStyle}>Dish Name</label>
-                <input type="text" value={name} onChange={(e) => setName(e.target.value)}
+                <label htmlFor="input-dish-name" className="block text-xs font-bold uppercase tracking-wider mb-1.5" style={labelStyle}>Dish Name</label>
+                <input type="text" id="input-dish-name" value={name} onChange={(e) => setName(e.target.value)}
                   className="w-full rounded-xl px-4 py-2.5 font-medium text-sm transition-all outline-none"
                   style={inputStyles} onFocus={inputFocus} onBlur={inputBlur}
                   placeholder="e.g. Classic Pepperoni Pizza" required />
@@ -184,15 +188,15 @@ export default function MenuManagement() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider mb-1.5" style={labelStyle}>Price (₹)</label>
-                  <input type="number" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)}
+                  <label htmlFor="input-price" className="block text-xs font-bold uppercase tracking-wider mb-1.5" style={labelStyle}>Price (₹)</label>
+                  <input type="number" id="input-price" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)}
                     className="w-full rounded-xl px-4 py-2.5 font-medium text-sm transition-all outline-none"
                     style={inputStyles} onFocus={inputFocus} onBlur={inputBlur}
                     placeholder="12.99" required />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider mb-1.5" style={labelStyle}>Category</label>
-                  <select value={category} onChange={(e) => setCategory(e.target.value)}
+                  <label htmlFor="select-category" className="block text-xs font-bold uppercase tracking-wider mb-1.5" style={labelStyle}>Category</label>
+                  <select id="select-category" value={category} onChange={(e) => setCategory(e.target.value)}
                     className="w-full rounded-xl px-4 py-2.5 font-bold text-xs uppercase transition-all outline-none"
                     style={inputStyles} onFocus={inputFocus} onBlur={inputBlur}>
                     <option value="Mains">Mains</option>
@@ -205,16 +209,16 @@ export default function MenuManagement() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider mb-1.5" style={labelStyle}>Image URL (Optional)</label>
-                <input type="url" value={image} onChange={(e) => setImage(e.target.value)}
+                <label htmlFor="input-image-url" className="block text-xs font-bold uppercase tracking-wider mb-1.5" style={labelStyle}>Image URL (Optional)</label>
+                <input type="url" id="input-image-url" value={image} onChange={(e) => setImage(e.target.value)}
                   className="w-full rounded-xl px-4 py-2.5 font-medium text-sm transition-all outline-none"
                   style={inputStyles} onFocus={inputFocus} onBlur={inputBlur}
                   placeholder="https://images.unsplash.com/..." />
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider mb-1.5" style={labelStyle}>Description</label>
-                <textarea rows={2} value={description} onChange={(e) => setDescription(e.target.value)}
+                <label htmlFor="input-description" className="block text-xs font-bold uppercase tracking-wider mb-1.5" style={labelStyle}>Description</label>
+                <textarea id="input-description" rows={2} value={description} onChange={(e) => setDescription(e.target.value)}
                   className="w-full rounded-xl px-4 py-2.5 font-medium text-sm transition-all outline-none resize-none"
                   style={inputStyles} onFocus={inputFocus} onBlur={inputBlur}
                   placeholder="Provide details about ingredients, dietary markers, size, etc." />

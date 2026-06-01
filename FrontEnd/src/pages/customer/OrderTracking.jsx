@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '../../services/api';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { FiArrowLeft, FiCheck, FiClock, FiUser, FiTruck, FiAlertTriangle } from 'react-icons/fi';
+import SEO from '../../components/SEO';
 
 export default function OrderTracking() {
   const { orderId } = useParams();
@@ -85,12 +86,13 @@ export default function OrderTracking() {
 
   return (
     <div className="space-y-6 pb-12 select-none">
-      
+      <SEO title="Track Your Live Delivery Status" description="Real-time GPS tracking and live status updates for your food delivery order on Num Num." />
       <div className="flex items-center gap-3">
         <button
           onClick={() => navigate('/customer/orders')}
           className="touch-target rounded-xl shadow-sm cursor-pointer"
           style={{ backgroundColor: 'var(--bg-panel)', border: '1px solid var(--border)', color: 'var(--text-body)' }}
+          aria-label="Back to orders list"
         >
           <FiArrowLeft size={18} />
         </button>

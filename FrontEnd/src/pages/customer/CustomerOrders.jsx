@@ -4,6 +4,7 @@ import { api } from '../../services/api';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import NetworkError from '../../components/NetworkError';
 import { FiShoppingBag, FiTruck, FiChevronRight } from 'react-icons/fi';
+import SEO from '../../components/SEO';
 
 export default function CustomerOrders() {
   const navigate = useNavigate();
@@ -60,6 +61,7 @@ export default function CustomerOrders() {
 
   return (
     <div className="space-y-6 pb-8 select-none">
+      <SEO title="My Order History" description="Keep track of your active deliveries, pending chef preparations, and history of past orders on Num Num." />
       <div>
         <h2 className="text-xl font-extrabold leading-none" style={{ color: 'var(--text-head)' }}>My Orders</h2>
         <p className="text-xs font-bold uppercase tracking-wider mt-1" style={{ color: 'var(--text-muted)' }}>Complete order logs & tracking</p>

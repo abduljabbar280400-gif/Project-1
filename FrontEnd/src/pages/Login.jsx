@@ -4,6 +4,7 @@ import { api } from '../services/api';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { useTheme } from '../context/ThemeContext';
 import { FiSun, FiMoon, FiEye, FiEyeOff } from 'react-icons/fi';
+import SEO from '../components/SEO';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -70,6 +71,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex flex-col font-sans" style={{ backgroundColor: 'var(--bg-page)' }}>
+      <SEO title="Sign In to Your Account" description="Log in to Num Num to access your operational chef dashboard, track food deliveries, or place new orders." />
       <div className="max-w-md w-full min-h-screen flex flex-col mx-auto justify-center px-6 py-12 relative shadow-2xl border-x" style={{ backgroundColor: 'var(--bg-page)', borderColor: 'var(--border)' }}>
 
         {/* Dark Mode Icon Toggle — top-right corner */}
@@ -136,7 +138,7 @@ export default function Login() {
             )}
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--text-muted)' }}>
+              <label htmlFor="input-email" className="block text-xs font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--text-muted)' }}>
                 Email Address
               </label>
               <input
@@ -162,7 +164,7 @@ export default function Login() {
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--text-muted)' }}>
+              <label htmlFor="input-password" className="block text-xs font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--text-muted)' }}>
                 Password
               </label>
               <div className="relative">

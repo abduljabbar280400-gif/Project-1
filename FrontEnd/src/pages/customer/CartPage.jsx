@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { api } from '../../services/api';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { FiArrowLeft, FiPlus, FiMinus, FiTrash2, FiMapPin, FiClipboard } from 'react-icons/fi';
+import SEO from '../../components/SEO';
 
 export default function CartPage() {
   const navigate = useNavigate();
@@ -123,12 +124,13 @@ export default function CartPage() {
 
   return (
     <div className="space-y-6 pb-8 select-none">
-      
+      <SEO title="Review Your Cart & Checkout" description="Confirm your ordered food items, select your delivery address, write kitchen instructions, and securely place your order." />
       <div className="flex items-center gap-3">
         <button
           onClick={() => navigate(`/customer/restaurants/${cart.restaurant_id}`)}
           className="touch-target rounded-xl shadow-sm cursor-pointer"
           style={{ backgroundColor: 'var(--bg-panel)', border: '1px solid var(--border)', color: 'var(--text-body)' }}
+          aria-label="Back to restaurant menu"
         >
           <FiArrowLeft size={18} />
         </button>
@@ -165,6 +167,7 @@ export default function CartPage() {
                     onClick={() => updateQuantity(item.menu_item_id, -1)}
                     className="w-6 h-6 rounded flex items-center justify-center font-bold cursor-pointer"
                     style={{ backgroundColor: 'var(--bg-panel)', border: '1px solid var(--border)', color: 'var(--text-head)' }}
+                    aria-label={`Decrease quantity of ${item.name}`}
                   >
                     <FiMinus size={10} />
                   </button>
@@ -175,6 +178,7 @@ export default function CartPage() {
                     onClick={() => updateQuantity(item.menu_item_id, 1)}
                     className="w-6 h-6 rounded flex items-center justify-center font-bold cursor-pointer"
                     style={{ backgroundColor: 'var(--bg-panel)', border: '1px solid var(--border)', color: 'var(--text-head)' }}
+                    aria-label={`Increase quantity of ${item.name}`}
                   >
                     <FiPlus size={10} />
                   </button>
@@ -184,6 +188,7 @@ export default function CartPage() {
                   onClick={() => removeItem(item.menu_item_id)}
                   className="w-8 h-8 flex items-center justify-center text-rose-500 cursor-pointer"
                   title="Remove item"
+                  aria-label={`Remove ${item.name} from cart`}
                 >
                   <FiTrash2 size={15} />
                 </button>
@@ -265,8 +270,10 @@ export default function CartPage() {
               <FiClipboard size={14} style={{ color: '#B4846C' }} />
               <span>SPECIAL INSTRUCTIONS (OPTIONAL)</span>
             </div>
+            <label htmlFor="special-instructions-input" className="sr-only">Special Instructions</label>
             <input
               type="text"
+              id="special-instructions-input"
               value={specialInstructions}
               onChange={(e) => setSpecialInstructions(e.target.value)}
               placeholder="e.g. Please leave at door, don't ring bell"

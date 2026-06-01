@@ -4,6 +4,7 @@ import { api } from '../../services/api';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import NetworkError from '../../components/NetworkError';
 import { FiClock, FiPlus, FiArrowDownRight, FiCheckCircle, FiX } from 'react-icons/fi';
+import SEO from '../../components/SEO';
 
 const inputStyles = { backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)', color: 'var(--text-head)' };
 const labelStyle = { color: 'var(--text-muted)' };
@@ -64,6 +65,7 @@ export default function DriverPayouts() {
 
   return (
     <div className="space-y-6 pb-8 select-none">
+      <SEO title="Driver Earnings & Weekly Payouts" description="Review completed deliveries, track your trip earnings, and manage your partner payout methods." />
       
       <div>
         <h2 className="text-xl font-extrabold leading-none" style={{ color: 'var(--text-head)' }}>Earnings Balance</h2>
@@ -148,27 +150,27 @@ export default function DriverPayouts() {
             </div>
             <form onSubmit={handlePayoutSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider mb-1.5" style={labelStyle}>Amount to Payout (₹)</label>
-                <input type="number" step="0.01" max={earningsBalance} value={amount} onChange={(e) => setAmount(e.target.value)}
+                <label htmlFor="input-amount" className="block text-xs font-bold uppercase tracking-wider mb-1.5" style={labelStyle}>Amount to Payout (₹)</label>
+                <input type="number" id="input-amount" step="0.01" max={earningsBalance} value={amount} onChange={(e) => setAmount(e.target.value)}
                   className="w-full rounded-xl px-4 py-2.5 font-bold text-sm outline-none transition-all" style={inputStyles}
                   onFocus={inputFocus} onBlur={inputBlur} placeholder={`Max ₹${earningsBalance.toFixed(2)}`} required />
               </div>
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider mb-1.5" style={labelStyle}>Bank Name</label>
-                <input type="text" value={bankName} onChange={(e) => setBankName(e.target.value)}
+                <label htmlFor="input-bank-name" className="block text-xs font-bold uppercase tracking-wider mb-1.5" style={labelStyle}>Bank Name</label>
+                <input type="text" id="input-bank-name" value={bankName} onChange={(e) => setBankName(e.target.value)}
                   className="w-full rounded-xl px-4 py-2.5 font-medium text-sm outline-none transition-all" style={inputStyles}
                   onFocus={inputFocus} onBlur={inputBlur} placeholder="e.g. Chase Bank" required />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider mb-1.5" style={labelStyle}>Account Number</label>
-                  <input type="text" value={accountNumber} onChange={(e) => setAccountNumber(e.target.value)}
+                  <label htmlFor="input-account-number" className="block text-xs font-bold uppercase tracking-wider mb-1.5" style={labelStyle}>Account Number</label>
+                  <input type="text" id="input-account-number" value={accountNumber} onChange={(e) => setAccountNumber(e.target.value)}
                     className="w-full rounded-xl px-4 py-2.5 font-medium text-sm outline-none transition-all" style={inputStyles}
                     onFocus={inputFocus} onBlur={inputBlur} placeholder="1234567890" required />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider mb-1.5" style={labelStyle}>Account Name</label>
-                  <input type="text" value={accountName} onChange={(e) => setAccountName(e.target.value)}
+                  <label htmlFor="input-account-name" className="block text-xs font-bold uppercase tracking-wider mb-1.5" style={labelStyle}>Account Name</label>
+                  <input type="text" id="input-account-name" value={accountName} onChange={(e) => setAccountName(e.target.value)}
                     className="w-full rounded-xl px-4 py-2.5 font-medium text-sm outline-none transition-all" style={inputStyles}
                     onFocus={inputFocus} onBlur={inputBlur} placeholder="e.g. Dave Miller" required />
                 </div>
