@@ -104,14 +104,11 @@ export default function Register() {
         </div>
 
         {/* Brand */}
-        <div className="text-center mb-6">
-          <div
-            className="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-extrabold text-2xl shadow-sm mx-auto mb-3"
-            style={{ backgroundColor: '#B4846C' }}
-          >
-            N
+        <div className="text-center mb-6 flex flex-col items-center">
+          <div className="flex items-center gap-3 mb-2">
+            <img src="/logo.jpg" alt="Num Num Logo" className="w-10 h-10 rounded-xl object-cover shadow-sm" />
+            <h1 className="text-2xl font-extrabold tracking-tight" style={{ color: 'var(--text-head)' }}>Num Num</h1>
           </div>
-          <h1 className="text-2xl font-extrabold tracking-tight" style={{ color: 'var(--text-head)' }}>Num Num</h1>
           <p className="text-xs font-semibold mt-0.5" style={{ color: 'var(--text-muted)' }}>Sleek, direct setup to get started</p>
         </div>
 

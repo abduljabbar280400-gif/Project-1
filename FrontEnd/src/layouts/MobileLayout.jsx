@@ -68,8 +68,8 @@ export default function MobileLayout({ children, role }) {
           style={{ backgroundColor: 'var(--nav-bg)', borderColor: 'var(--nav-border)', transition: 'background-color 0.3s ease' }}
         >
           <div className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-sm" style={{ backgroundColor: '#B4846C' }}>
-              N
+            <div className="w-9 h-9 flex items-center justify-center">
+              <img src="/logo.jpg" alt="Num Num Logo" className="w-8 h-8 rounded-lg object-cover" />
             </div>
             <div>
               <h1 className="text-base font-extrabold leading-none" style={{ color: 'var(--text-head)' }}>Num Num</h1>

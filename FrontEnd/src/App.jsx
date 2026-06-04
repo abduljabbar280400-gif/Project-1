@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
+import SplashScreen from './components/SplashScreen';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import MobileLayout from './layouts/MobileLayout';
@@ -67,127 +68,133 @@ function HomeRedirect() {
 }
 
 export default function App() {
+  const [showSplash, setShowSplash] = React.useState(true);
+
   return (
     <ThemeProvider>
-      <BrowserRouter>
-      <Routes>
-        {/* Public auth pages */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+      {showSplash ? (
+        <SplashScreen onComplete={() => setShowSplash(false)} />
+      ) : (
+        <BrowserRouter>
+        <Routes>
+          {/* Public auth pages */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
-        {/* Customer Protected Pages */}
-        <Route path="/customer/browse" element={
-          <RequireAuth allowedRole="customer">
-            <MobileLayout role="customer">
-              <BrowseRestaurants />
-            </MobileLayout>
-          </RequireAuth>
-        } />
-        <Route path="/customer/restaurants/:restaurantId" element={
-          <RequireAuth allowedRole="customer">
-            <MobileLayout role="customer">
-              <RestaurantMenu />
-            </MobileLayout>
-          </RequireAuth>
-        } />
-        <Route path="/customer/cart" element={
-          <RequireAuth allowedRole="customer">
-            <MobileLayout role="customer">
-              <CartPage />
-            </MobileLayout>
-          </RequireAuth>
-        } />
-        <Route path="/customer/orders" element={
-          <RequireAuth allowedRole="customer">
-            <MobileLayout role="customer">
-              <CustomerOrders />
-            </MobileLayout>
-          </RequireAuth>
-        } />
-        <Route path="/customer/orders/:orderId" element={
-          <RequireAuth allowedRole="customer">
-            <MobileLayout role="customer">
-              <OrderTracking />
-            </MobileLayout>
-          </RequireAuth>
-        } />
+          {/* Customer Protected Pages */}
+          <Route path="/customer/browse" element={
+            <RequireAuth allowedRole="customer">
+              <MobileLayout role="customer">
+                <BrowseRestaurants />
+              </MobileLayout>
+            </RequireAuth>
+          } />
+          <Route path="/customer/restaurants/:restaurantId" element={
+            <RequireAuth allowedRole="customer">
+              <MobileLayout role="customer">
+                <RestaurantMenu />
+              </MobileLayout>
+            </RequireAuth>
+          } />
+          <Route path="/customer/cart" element={
+            <RequireAuth allowedRole="customer">
+              <MobileLayout role="customer">
+                <CartPage />
+              </MobileLayout>
+            </RequireAuth>
+          } />
+          <Route path="/customer/orders" element={
+            <RequireAuth allowedRole="customer">
+              <MobileLayout role="customer">
+                <CustomerOrders />
+              </MobileLayout>
+            </RequireAuth>
+          } />
+          <Route path="/customer/orders/:orderId" element={
+            <RequireAuth allowedRole="customer">
+              <MobileLayout role="customer">
+                <OrderTracking />
+              </MobileLayout>
+            </RequireAuth>
+          } />
 
-        {/* Chef Protected Pages */}
-        <Route path="/chef/kitchen" element={
-          <RequireAuth allowedRole="chef">
-            <MobileLayout role="chef">
-              <ChefDashboard />
-            </MobileLayout>
-          </RequireAuth>
-        } />
-        <Route path="/chef/menu" element={
-          <RequireAuth allowedRole="chef">
-            <MobileLayout role="chef">
-              <MenuManagement />
-            </MobileLayout>
-          </RequireAuth>
-        } />
-        <Route path="/chef/earnings" element={
-          <RequireAuth allowedRole="chef">
-            <MobileLayout role="chef">
-              <ChefPayouts />
-            </MobileLayout>
-          </RequireAuth>
-        } />
+          {/* Chef Protected Pages */}
+          <Route path="/chef/kitchen" element={
+            <RequireAuth allowedRole="chef">
+              <MobileLayout role="chef">
+                <ChefDashboard />
+              </MobileLayout>
+            </RequireAuth>
+          } />
+          <Route path="/chef/menu" element={
+            <RequireAuth allowedRole="chef">
+              <MobileLayout role="chef">
+                <MenuManagement />
+              </MobileLayout>
+            </RequireAuth>
+          } />
+          <Route path="/chef/earnings" element={
+            <RequireAuth allowedRole="chef">
+              <MobileLayout role="chef">
+                <ChefPayouts />
+              </MobileLayout>
+            </RequireAuth>
+          } />
 
-        {/* Delivery Protected Pages */}
-        <Route path="/delivery/jobs" element={
-          <RequireAuth allowedRole="delivery">
-            <MobileLayout role="delivery">
-              <DeliveryDashboard />
-            </MobileLayout>
-          </RequireAuth>
-        } />
-        <Route path="/delivery/active" element={
-          <RequireAuth allowedRole="delivery">
-            <MobileLayout role="delivery">
-              <DeliveryDashboard />
-            </MobileLayout>
-          </RequireAuth>
-        } />
-        <Route path="/delivery/earnings" element={
-          <RequireAuth allowedRole="delivery">
-            <MobileLayout role="delivery">
-              <DriverPayouts />
-            </MobileLayout>
-          </RequireAuth>
-        } />
+          {/* Delivery Protected Pages */}
+          <Route path="/delivery/jobs" element={
+            <RequireAuth allowedRole="delivery">
+              <MobileLayout role="delivery">
+                <DeliveryDashboard />
+              </MobileLayout>
+            </RequireAuth>
+          } />
+          <Route path="/delivery/active" element={
+            <RequireAuth allowedRole="delivery">
+              <MobileLayout role="delivery">
+                <DeliveryDashboard />
+              </MobileLayout>
+            </RequireAuth>
+          } />
+          <Route path="/delivery/earnings" element={
+            <RequireAuth allowedRole="delivery">
+              <MobileLayout role="delivery">
+                <DriverPayouts />
+              </MobileLayout>
+            </RequireAuth>
+          } />
 
-        {/* Admin Protected Pages */}
-        <Route path="/admin/restaurants" element={
-          <RequireAuth allowedRole="admin">
-            <MobileLayout role="admin">
-              <AdminDashboard />
-            </MobileLayout>
-          </RequireAuth>
-        } />
-        <Route path="/admin/payouts" element={
-          <RequireAuth allowedRole="admin">
-            <MobileLayout role="admin">
-              <AdminDashboard />
-            </MobileLayout>
-          </RequireAuth>
-        } />
+          {/* Admin Protected Pages */}
+          <Route path="/admin/restaurants" element={
+            <RequireAuth allowedRole="admin">
+              <MobileLayout role="admin">
+                <AdminDashboard />
+              </MobileLayout>
+            </RequireAuth>
+          } />
+          <Route path="/admin/payouts" element={
+            <RequireAuth allowedRole="admin">
+              <MobileLayout role="admin">
+                <AdminDashboard />
+              </MobileLayout>
+            </RequireAuth>
+          } />
 
-        {/* Unified Profile Route */}
-        <Route path="/profile" element={
-          <RequireAuth>
-            <MobileLayout role={JSON.parse(localStorage.getItem('num_user') || '{}').role}>
-              <Profile />
-            </MobileLayout>
-          </RequireAuth>
-        } />
+          {/* Unified Profile Route */}
+          <Route path="/profile" element={
+            <RequireAuth>
+              <MobileLayout role={JSON.parse(localStorage.getItem('num_user') || '{}').role}>
+                <Profile />
+              </MobileLayout>
+            </RequireAuth>
+          } />
 
-        {/* Home redirects */}
-        <Route path="/" element={<HomeRedirect />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-      </BrowserRouter>
+          {/* Home redirects */}
+          <Route path="/" element={<HomeRedirect />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+        </BrowserRouter>
+      )}
     </ThemeProvider>
   );
 }

@@ -157,7 +157,7 @@ const DeliveryJobMap = ({
 
   return (
     <div 
-      className={isFullscreen ? "fixed left-1/2 -translate-x-1/2 w-full max-w-md top-[64px] bottom-[72px] z-[60] flex flex-col shadow-2xl" : "w-full h-64 md:h-80 rounded-xl overflow-hidden shadow-inner border relative"}
+      className={isFullscreen ? "fixed left-1/2 -translate-x-1/2 w-full max-w-md top-[64px] bottom-[72px] z-[60] flex flex-col shadow-2xl" : "w-full h-64 md:h-80 rounded-xl overflow-hidden shadow-inner border relative z-0"}
       style={{ backgroundColor: 'var(--bg-page)', borderColor: 'var(--border)' }}
     >
       

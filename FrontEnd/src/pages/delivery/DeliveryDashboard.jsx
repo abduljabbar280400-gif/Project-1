@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { api } from '../../services/api';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import NetworkError from '../../components/NetworkError';
@@ -15,6 +16,9 @@ export default function DeliveryDashboard() {
   const [error, setError] = useState(null);
   const [profileLoading, setProfileLoading] = useState(false);
   const [checklist, setChecklist] = useState({});
+  const location = useLocation();
+  const isActiveTab = location.pathname.includes('/active');
+  const isJobsTab = location.pathname.includes('/jobs');
 
   // Driver location
   const { location: driverLocation } = useGeolocation({ enableHighAccuracy: true }, true);
@@ -120,7 +124,7 @@ export default function DeliveryDashboard() {
       </div>
 
       {/* Active Deliveries */}
-      {activeOrders.length > 0 && (
+      {isActiveTab && activeOrders.length > 0 && (
         <div className="space-y-4">
           <span className="text-xs font-bold uppercase tracking-wider block" style={{ color: 'var(--text-muted)' }}>
             Active Deliveries ({activeOrders.length})
@@ -211,9 +215,20 @@ export default function DeliveryDashboard() {
         </div>
       )}
 
+      {isActiveTab && activeOrders.length === 0 && (
+        <div className="card-solid p-8 text-center mt-4">
+          <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3" style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)', color: 'var(--text-muted)' }}>
+            <FiActivity size={24} />
+          </div>
+          <h3 className="text-sm font-bold" style={{ color: 'var(--text-head)' }}>No active deliveries</h3>
+          <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>Accept a job from the Jobs tab to start earning.</p>
+        </div>
+      )}
+
       {/* Available Jobs */}
-      <div className="space-y-4">
-        <span className="text-xs font-bold uppercase tracking-wider block" style={{ color: 'var(--text-muted)' }}>
+      {isJobsTab && (
+        <div className="space-y-4">
+          <span className="text-xs font-bold uppercase tracking-wider block" style={{ color: 'var(--text-muted)' }}>
           Available Pickup Jobs ({availableJobs.length})
         </span>
 
@@ -274,6 +289,7 @@ export default function DeliveryDashboard() {
           </div>
         )}
       </div>
+      )}
 
     </div>
   );

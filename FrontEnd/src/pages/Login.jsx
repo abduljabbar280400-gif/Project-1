@@ -88,15 +88,12 @@ export default function Login() {
           </button>
         </div>
 
-        {/* Brand Identity */}
-        <div className="text-center mb-8">
-          <div
-            className="w-16 h-16 rounded-3xl flex items-center justify-center text-white font-extrabold text-3xl shadow-md mx-auto mb-4 hover:scale-105 transition-transform"
-            style={{ backgroundColor: '#B4846C' }}
-          >
-            N
-          </div>
+        {/* Premium Header Space */}
+      <div className="flex flex-col items-center justify-center pt-10 pb-6">
+        <div className="flex items-center gap-3">
+          <img src="/logo.jpg" alt="Num Num Logo" className="w-10 h-10 rounded-xl object-cover shadow-sm" />
           <h1 className="text-3xl font-extrabold tracking-tight" style={{ color: 'var(--text-head)' }}>Num Num</h1>
+        </div>
           <p className="text-sm font-medium mt-1" style={{ color: 'var(--text-muted)' }}>Sleek Operational Restaurant Platform MVP</p>
         </div>
 
