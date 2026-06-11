@@ -15,6 +15,7 @@ export default function RestaurantMenu() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [cartQuantities, setCartQuantities] = useState({});
+  const [activeOrder, setActiveOrder] = useState(null);
 
   const fetchData = async () => {
     setLoading(true); setError(null);
@@ -30,6 +31,28 @@ export default function RestaurantMenu() {
         setCartQuantities(qtys);
       } else {
         setCartQuantities({});
+      }
+
+      // Check for an active order from this restaurant if authenticated
+      if (localStorage.getItem('num_token')) {
+        try {
+          const ordersData = await api.customer.getOrders();
+          const orders = ordersData?.data || ordersData || [];
+          const found = orders.find(o => {
+            if (Number(o.restaurant_id) !== Number(restaurantId)) return false;
+            if (!['accepted', 'preparing'].includes(o.status)) return false;
+            
+            const createdAt = new Date(o.created_at);
+            const diffMs = new Date() - createdAt;
+            const diffMins = diffMs / 1000 / 60;
+            return diffMins <= 15;
+          });
+          setActiveOrder(found || null);
+        } catch (_) {
+          setActiveOrder(null);
+        }
+      } else {
+        setActiveOrder(null);
       }
     } catch (err) {
       setError(err.message || 'Failed to retrieve menu. Please try again.');
@@ -140,6 +163,24 @@ export default function RestaurantMenu() {
       </div>
 
       <div className="space-y-6">
+        {/* Active Order Banner */}
+        {activeOrder && (
+          <div
+            className="p-3.5 rounded-2xl flex items-center gap-3 shadow-sm cursor-pointer"
+            style={{ background: 'linear-gradient(135deg, #3e2820, #5a3a28)', border: '1px solid #7D5A50' }}
+            onClick={() => navigate(`/customer/orders/${activeOrder.id}`)}
+          >
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#B4846C' }}>
+              <FiShoppingBag size={16} className="text-white" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <span className="text-xs font-extrabold block" style={{ color: '#FCDEC0' }}>Active Order #{activeOrder.id}</span>
+              <span className="text-[10px] font-semibold" style={{ color: '#E5B299' }}>Add items below to this order — no extra fees!</span>
+            </div>
+            <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: '#E5B299' }}>View →</span>
+          </div>
+        )}
+
         {Object.keys(categories).map(categoryName => (
           <div key={categoryName} className="space-y-3">
             <h3 className="text-xs font-extrabold uppercase tracking-wider pb-1.5" style={{ color: 'var(--text-muted)', borderBottom: '1px solid var(--border)' }}>

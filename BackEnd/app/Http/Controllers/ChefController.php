@@ -335,4 +335,74 @@ class ChefController extends Controller
             'earnings_balance' => (float) $restaurant->earnings_balance,
         ]);
     }
+
+    /**
+     * Chef accepts or rejects pending extra items requested by the customer.
+     */
+    public function updateExtraItemsStatus(Request $request, $orderId)
+    {
+        $restaurant = $request->user()->restaurant;
+        if (!$restaurant) {
+            return response()->json(['message' => 'Restaurant profile not found.'], 404);
+        }
+
+        $order = Order::where('id', $orderId)
+            ->where('restaurant_id', $restaurant->id)
+            ->first();
+
+        if (!$order) {
+            return response()->json(['message' => 'Order not found.'], 404);
+        }
+
+        $request->validate([
+            'action' => 'required|string|in:accept,reject',
+            'rejection_reason' => 'nullable|string|required_if:action,reject',
+        ]);
+
+        $action = $request->action;
+
+        // Find all pending extra items for this order
+        $pendingExtras = $order->orderItems()->where('is_extra', true)->where('extra_status', 'pending')->get();
+
+        if ($pendingExtras->isEmpty()) {
+            return response()->json(['message' => 'No pending extra items found for this order.'], 400);
+        }
+
+        DB::transaction(function () use ($order, $pendingExtras, $action, $request) {
+            if ($action === 'accept') {
+                // Mark extras as accepted
+                foreach ($pendingExtras as $item) {
+                    $item->extra_status = 'accepted';
+                    $item->save();
+                }
+
+                // Recalculate: add extra items cost to subtotal + recalculate commission
+                $extraSubtotal = $pendingExtras->sum(fn($i) => $i->price * $i->quantity);
+                $commissionRate = (float) env('PLATFORM_COMMISSION_RATE', 10.0);
+                $extraCommission = round(($extraSubtotal * ($commissionRate / 100)), 2);
+
+                $order->subtotal = (float) $order->subtotal + $extraSubtotal;
+                $order->commission_amount = (float) $order->commission_amount + $extraCommission;
+                // total_amount adds extra subtotal only (no new delivery/service fee)
+                $order->total_amount = (float) $order->total_amount + $extraSubtotal;
+                $order->save();
+            } elseif ($action === 'reject') {
+                // Mark extras as rejected and store reason on order
+                foreach ($pendingExtras as $item) {
+                    $item->extra_status = 'rejected';
+                    $item->save();
+                }
+
+                $order->extra_rejection_reason = $request->rejection_reason;
+                $order->save();
+            }
+        });
+
+        return response()->json([
+            'message' => $action === 'accept'
+                ? 'Extra items accepted. Order total updated.'
+                : 'Extra items declined.',
+            'order' => new OrderResource($order->fresh()->load(['customer', 'restaurant', 'orderItems.menuItem'])),
+        ]);
+    }
 }

@@ -26,9 +26,14 @@ export default function MobileLayout({ children, role }) {
   // Define tab navigation based on role
   const getTabs = () => {
     switch (activeRole) {
+      case 'guest':
+        return [
+          { label: 'Browse', path: '/', icon: <FiHome size={22} /> },
+          { label: 'Login', path: '/login', icon: <FiUser size={22} /> },
+        ];
       case 'customer':
         return [
-          { label: 'Browse', path: '/customer/browse', icon: <FiHome size={22} /> },
+          { label: 'Browse', path: '/', icon: <FiHome size={22} /> },
           { label: 'My Orders', path: '/customer/orders', icon: <FiShoppingBag size={22} /> },
           { label: 'Profile', path: '/profile', icon: <FiUser size={22} /> },
         ];
@@ -73,13 +78,15 @@ export default function MobileLayout({ children, role }) {
             </div>
             <div>
               <h1 className="text-base font-extrabold leading-none" style={{ color: 'var(--text-head)' }}>Num Num</h1>
-              <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>{activeRole} hub</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
+                {activeRole === 'guest' ? 'public browse' : `${activeRole} hub`}
+              </span>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
             <span className="text-xs font-semibold truncate max-w-[80px]" style={{ color: 'var(--text-body)' }}>
-              {user.name || 'Account'}
+              {user.name || 'Guest'}
             </span>
 
             {/* Simple / Senior Mode Toggle */}
@@ -110,19 +117,32 @@ export default function MobileLayout({ children, role }) {
               {isDark ? <FiSun size={18} /> : <FiMoon size={18} />}
             </button>
 
-            {/* Logout */}
-            <button
-              onClick={handleLogout}
-              className="w-9 h-9 flex items-center justify-center rounded-xl transition-colors cursor-pointer"
-              style={{ color: 'var(--text-muted)' }}
-              onMouseEnter={e => e.currentTarget.style.color = '#e11d48'}
-              onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}
-              title="Logout"
-              aria-label="Logout"
-              id="btn-logout"
-            >
-              <FiLogOut size={18} />
-            </button>
+            {/* Logout / Login button */}
+            {!localStorage.getItem('num_token') ? (
+              <button
+                onClick={() => navigate('/login')}
+                className="px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all cursor-pointer text-white"
+                style={{ backgroundColor: '#B4846C' }}
+                title="Login"
+                aria-label="Login"
+                id="btn-login-header"
+              >
+                Login
+              </button>
+            ) : (
+              <button
+                onClick={handleLogout}
+                className="w-9 h-9 flex items-center justify-center rounded-xl transition-colors cursor-pointer"
+                style={{ color: 'var(--text-muted)' }}
+                onMouseEnter={e => e.currentTarget.style.color = '#e11d48'}
+                onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}
+                title="Logout"
+                aria-label="Logout"
+                id="btn-logout"
+              >
+                <FiLogOut size={18} />
+              </button>
+            )}
           </div>
         </header>
 

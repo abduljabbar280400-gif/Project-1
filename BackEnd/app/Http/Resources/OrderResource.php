@@ -34,6 +34,7 @@ class OrderResource extends JsonResource
             'dropoff_latitude' => $this->dropoff_latitude ? (float) $this->dropoff_latitude : null,
             'dropoff_longitude' => $this->dropoff_longitude ? (float) $this->dropoff_longitude : null,
             'rejection_reason' => $this->rejection_reason,
+            'extra_rejection_reason' => $this->extra_rejection_reason,
             'accepted_at' => $this->accepted_at ? $this->accepted_at->toIso8601String() : null,
             'prepared_at' => $this->prepared_at ? $this->prepared_at->toIso8601String() : null,
             'picked_up_at' => $this->picked_up_at ? $this->picked_up_at->toIso8601String() : null,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import SplashScreen from './components/SplashScreen';
 import Login from './pages/Login';
@@ -30,16 +30,17 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 function RequireAuth({ children, allowedRole }) {
   const token = localStorage.getItem('num_token');
   const userStr = localStorage.getItem('num_user');
+  const location = useLocation();
 
   if (!token || !userStr) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
   }
 
   const user = JSON.parse(userStr);
 
   if (allowedRole && user.role !== allowedRole) {
     // Role mismatch gatekeeper
-    if (user.role === 'customer') return <Navigate to="/customer/browse" replace />;
+    if (user.role === 'customer') return <Navigate to="/" replace />;
     if (user.role === 'chef') return <Navigate to="/chef/kitchen" replace />;
     if (user.role === 'delivery') return <Navigate to="/delivery/jobs" replace />;
     if (user.role === 'admin') return <Navigate to="/admin/restaurants" replace />;
@@ -55,16 +56,50 @@ function HomeRedirect() {
   const userStr = localStorage.getItem('num_user');
 
   if (!token || !userStr) {
-    return <Navigate to="/login" replace />;
+    return (
+      <MobileLayout role="guest">
+        <BrowseRestaurants />
+      </MobileLayout>
+    );
   }
 
   const user = JSON.parse(userStr);
-  if (user.role === 'customer') return <Navigate to="/customer/browse" replace />;
+  if (user.role === 'customer') {
+    return (
+      <MobileLayout role="customer">
+        <BrowseRestaurants />
+      </MobileLayout>
+    );
+  }
   if (user.role === 'chef') return <Navigate to="/chef/kitchen" replace />;
   if (user.role === 'delivery') return <Navigate to="/delivery/jobs" replace />;
   if (user.role === 'admin') return <Navigate to="/admin/restaurants" replace />;
 
-  return <Navigate to="/login" replace />;
+  return (
+    <MobileLayout role="guest">
+      <BrowseRestaurants />
+    </MobileLayout>
+  );
+}
+
+// Public wrapper for Restaurant Menu
+function RestaurantMenuWrapper() {
+  const token = localStorage.getItem('num_token');
+  const userStr = localStorage.getItem('num_user');
+  let role = 'guest';
+
+  if (token && userStr) {
+    const user = JSON.parse(userStr);
+    if (user.role === 'customer') {
+      role = 'customer';
+    }
+  }
+
+  return (
+    <MobileLayout role={role}>
+      <RestaurantMenu />
+    </MobileLayout>
+  );
 }
 
 export default function App() {
@@ -83,18 +118,10 @@ export default function App() {
 
           {/* Customer Protected Pages */}
           <Route path="/customer/browse" element={
-            <RequireAuth allowedRole="customer">
-              <MobileLayout role="customer">
-                <BrowseRestaurants />
-              </MobileLayout>
-            </RequireAuth>
+            <Navigate to="/" replace />
           } />
           <Route path="/customer/restaurants/:restaurantId" element={
-            <RequireAuth allowedRole="customer">
-              <MobileLayout role="customer">
-                <RestaurantMenu />
-              </MobileLayout>
-            </RequireAuth>
+            <RestaurantMenuWrapper />
           } />
           <Route path="/customer/cart" element={
             <RequireAuth allowedRole="customer">

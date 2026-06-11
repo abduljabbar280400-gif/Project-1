@@ -17,6 +17,12 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:register');
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');
 
+// Public Customer browsing routes
+Route::prefix('customer')->group(function () {
+    Route::get('/restaurants', [CustomerController::class, 'getRestaurants']);
+    Route::get('/restaurants/{restaurantId}/menu', [CustomerController::class, 'getRestaurantMenu']);
+});
+
 // Protected routes (Sanctum)
 Route::middleware('auth:sanctum')->group(function () {
     
@@ -27,12 +33,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // 1. Customer Actions
     Route::prefix('customer')->group(function () {
-        Route::get('/restaurants', [CustomerController::class, 'getRestaurants']);
-        Route::get('/restaurants/{restaurantId}/menu', [CustomerController::class, 'getRestaurantMenu']);
         Route::post('/orders', [CustomerController::class, 'placeOrder']);
         Route::get('/orders', [CustomerController::class, 'getOrders']);
         Route::get('/orders/{orderId}', [CustomerController::class, 'trackOrder']);
         Route::post('/orders/{orderId}/cancel', [CustomerController::class, 'cancelOrder']);
+        Route::post('/orders/{orderId}/add-items', [CustomerController::class, 'addExtraItems']);
         
         // Address book
         Route::get('/addresses', [CustomerController::class, 'getAddresses']);
@@ -50,6 +55,7 @@ Route::middleware('auth:sanctum')->group(function () {
         
         Route::get('/orders', [ChefController::class, 'getActiveOrders']);
         Route::post('/orders/{orderId}/status', [ChefController::class, 'updateOrderStatus']);
+        Route::post('/orders/{orderId}/extra-items/status', [ChefController::class, 'updateExtraItemsStatus']);
         
         Route::get('/menu', [ChefController::class, 'getMenuItems']);
         Route::post('/menu', [ChefController::class, 'storeMenuItem']);

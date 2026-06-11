@@ -17,6 +17,8 @@ class OrderItemResource extends JsonResource
             'image' => $this->menuItem?->image,
             'quantity' => $this->quantity,
             'price' => (float) $this->price,
+            'is_extra' => (bool) $this->is_extra,
+            'extra_status' => $this->extra_status,
         ];
     }
 }

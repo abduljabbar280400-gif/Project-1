@@ -25,6 +25,7 @@ class Order extends Model
         'special_instructions',
         'delivery_pin',
         'rejection_reason',
+        'extra_rejection_reason',
         'accepted_at',
         'prepared_at',
         'picked_up_at',

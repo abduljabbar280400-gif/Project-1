@@ -110,6 +110,10 @@ export default function BrowseRestaurants() {
   }, [location.latitude, location.longitude]);
 
   const fetchOrders = async () => {
+    if (!localStorage.getItem('num_token')) {
+      setActiveOrders([]);
+      return;
+    }
     try {
       const orderData = await api.customer.getOrders();
       const ordersArray = orderData?.data || orderData;

@@ -15,10 +15,13 @@ class OrderItem extends Model
         'menu_item_id',
         'quantity',
         'price',
+        'is_extra',
+        'extra_status',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
+        'is_extra' => 'boolean',
     ];
 
     public function order(): BelongsTo

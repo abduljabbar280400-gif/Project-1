@@ -333,4 +333,75 @@ class CustomerController extends Controller
 
         return response()->json(['message' => 'Address deleted successfully.']);
     }
+
+    /**
+     * Add extra items to an already accepted/preparing order.
+     */
+    public function addExtraItems(Request $request, $orderId)
+    {
+        $request->validate([
+            'items' => 'required|array|min:1',
+            'items.*.menu_item_id' => 'required|exists:menu_items,id',
+            'items.*.quantity' => 'required|integer|min:1',
+        ]);
+
+        $order = Order::where('id', $orderId)
+            ->where('customer_id', $request->user()->id)
+            ->first();
+
+        if (!$order) {
+            return response()->json(['message' => 'Order not found.'], 404);
+        }
+
+        if (!in_array($order->status, ['accepted', 'preparing'])) {
+            return response()->json(['message' => 'Extra items can only be added when the order is accepted or being prepared.'], 400);
+        }
+
+        // Enforce 15-minute time window from order creation
+        if ($order->created_at->diffInMinutes(now()) > 15) {
+            return response()->json(['message' => 'Extra items can only be added within 15 minutes of placing the main order.'], 400);
+        }
+
+        $restaurantId = $order->restaurant_id;
+        $orderItemsData = [];
+
+        // Validate items belong to the restaurant and are available
+        foreach ($request->items as $itemInput) {
+            $menuItem = MenuItem::where('id', $itemInput['menu_item_id'])
+                ->where('restaurant_id', $restaurantId)
+                ->first();
+
+            if (!$menuItem) {
+                return response()->json(['message' => 'One or more items do not belong to this restaurant.'], 400);
+            }
+
+            if (!$menuItem->is_available) {
+                return response()->json(['message' => "Item '{$menuItem->name}' is currently unavailable."], 400);
+            }
+
+            $qty = (int) $itemInput['quantity'];
+            $price = (float) $menuItem->price;
+
+            $orderItemsData[] = [
+                'order_id' => $order->id,
+                'menu_item_id' => $menuItem->id,
+                'quantity' => $qty,
+                'price' => $price,
+                'is_extra' => true,
+                'extra_status' => 'pending',
+            ];
+        }
+
+        // Insert within db transaction
+        DB::transaction(function () use ($orderItemsData) {
+            foreach ($orderItemsData as $itemData) {
+                OrderItem::create($itemData);
+            }
+        });
+
+        return response()->json([
+            'message' => 'Extra items requested successfully.',
+            'order' => new OrderResource($order->load(['customer', 'restaurant', 'orderItems.menuItem'])),
+        ], 200);
+    }
 }

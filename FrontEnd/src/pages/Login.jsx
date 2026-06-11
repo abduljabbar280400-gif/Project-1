@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { api } from '../services/api';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { useTheme } from '../context/ThemeContext';
@@ -8,6 +8,7 @@ import SEO from '../components/SEO';
 
 export default function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { isDark, toggleTheme } = useTheme();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -39,7 +40,9 @@ export default function Login() {
 
       const userRole = response.user.role;
       if (userRole === 'customer') {
-        navigate('/customer/browse');
+        const hasCart = localStorage.getItem('num_cart');
+        const from = location.state?.from || (hasCart ? '/customer/cart' : '/');
+        navigate(from);
       } else if (userRole === 'chef') {
         navigate('/chef/kitchen');
       } else if (userRole === 'delivery') {

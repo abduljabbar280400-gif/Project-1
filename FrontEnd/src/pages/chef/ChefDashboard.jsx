@@ -112,6 +112,21 @@ export default function ChefDashboard() {
     }
   };
 
+  const handleExtraAction = async (orderId, action) => {
+    let reason = '';
+    if (action === 'reject') {
+      reason = window.prompt('Please enter a rejection reason for the extra items:');
+      if (reason === null) return;
+      if (!reason.trim()) { alert('A rejection reason is required.'); return; }
+    }
+    try {
+      await api.chef.updateExtraItemsStatus(orderId, action, reason);
+      fetchOrders(false);
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to update extra items.');
+    }
+  };
+
   if (loading) return <LoadingSpinner message="Connecting to kitchen dashboard..." />;
 
   if (error && orders.length === 0) {
@@ -233,7 +248,7 @@ export default function ChefDashboard() {
                   {/* Food Items Ordered */}
                   <div className="space-y-1.5 p-2.5 rounded-xl" style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)' }}>
                     <span className="block text-[9px] font-extrabold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>DISH LIST</span>
-                    {order.order_items?.map(item => (
+                    {order.order_items?.filter(item => item.extra_status !== 'pending' && item.extra_status !== 'rejected').map(item => (
                       <div key={item.id} className="flex items-center gap-2.5 text-xs font-semibold" style={{ color: 'var(--text-body)' }}>
                         {/* Dish Image Thumbnail */}
                         <div
@@ -250,12 +265,44 @@ export default function ChefDashboard() {
                           ) : null}
                           <span style={{ display: item.image ? 'none' : 'flex', fontSize: '14px' }} className="w-full h-full items-center justify-center">🍽️</span>
                         </div>
-                        <span className="flex-1 truncate">{item.name}</span>
+                        <span className="flex-1 truncate">
+                          {item.name} {item.is_extra && <span className="text-[9px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.5 rounded-full ml-1">Extra</span>}
+                        </span>
                         <span className="font-black text-sm px-2 py-0.5 rounded-md"
                           style={{ backgroundColor: 'var(--border)', color: 'var(--text-head)' }}>x{item.quantity}</span>
                       </div>
                     ))}
                   </div>
+
+                  {/* Customer Added Extra Items Panel */}
+                  {order.order_items?.some(item => item.is_extra && item.extra_status === 'pending') && (
+                    <div className="space-y-2 p-3 rounded-xl border border-dashed border-amber-300 bg-amber-50/50 mt-2">
+                      <span className="block text-[9px] font-extrabold uppercase tracking-wider text-amber-800">⚠️ Customer Added Extra Items!</span>
+                      <div className="space-y-1.5">
+                        {order.order_items.filter(item => item.is_extra && item.extra_status === 'pending').map(item => (
+                          <div key={item.id} className="flex items-center gap-2.5 text-xs font-semibold text-amber-950">
+                            <span className="flex-1 truncate">{item.name}</span>
+                            <span className="font-black text-xs px-2 py-0.5 rounded-md bg-amber-100 text-amber-800">x{item.quantity}</span>
+                            <span className="font-bold text-amber-700">₹{(Number(item.price) * item.quantity).toFixed(2)}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 pt-2 border-t border-amber-200">
+                        <button
+                          onClick={() => handleExtraAction(order.id, 'accept')}
+                          className="px-3 py-1.5 rounded-lg text-[10px] font-black uppercase bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm cursor-pointer text-center"
+                        >
+                          Accept Extras
+                        </button>
+                        <button
+                          onClick={() => handleExtraAction(order.id, 'reject')}
+                          className="px-3 py-1.5 rounded-lg text-[10px] font-black uppercase bg-rose-600 hover:bg-rose-700 text-white shadow-sm cursor-pointer text-center"
+                        >
+                          Decline Extras
+                        </button>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Special Instructions */}
                   {order.special_instructions && (

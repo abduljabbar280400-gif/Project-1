@@ -53,6 +53,7 @@ export const api = {
     getOrders: () => apiClient.get('/customer/orders').then(res => res.data),
     trackOrder: (orderId) => apiClient.get(`/customer/orders/${orderId}`).then(res => res.data),
     cancelOrder: (orderId) => apiClient.post(`/customer/orders/${orderId}/cancel`).then(res => res.data),
+    addExtraItems: (orderId, data) => apiClient.post(`/customer/orders/${orderId}/add-items`, data).then(res => res.data),
     getAddresses: () => apiClient.get('/customer/addresses').then(res => res.data),
     addAddress: (data) => apiClient.post('/customer/addresses', data).then(res => res.data),
     updateAddress: (id, data) => apiClient.put(`/customer/addresses/${id}`, data).then(res => res.data),
@@ -68,6 +69,8 @@ export const api = {
     getOrders: () => apiClient.get('/chef/orders').then(res => res.data),
     updateOrderStatus: (orderId, action, rejectionReason = '') => 
       apiClient.post(`/chef/orders/${orderId}/status`, { action, rejection_reason: rejectionReason }).then(res => res.data),
+    updateExtraItemsStatus: (orderId, action, rejectionReason = '') =>
+      apiClient.post(`/chef/orders/${orderId}/extra-items/status`, { action, rejection_reason: rejectionReason }).then(res => res.data),
     getMenu: () => apiClient.get('/chef/menu').then(res => res.data),
     storeMenuItem: (data) => apiClient.post('/chef/menu', data).then(res => res.data),
     updateMenuItem: (itemId, data) => apiClient.put(`/chef/menu/${itemId}`, data).then(res => res.data),

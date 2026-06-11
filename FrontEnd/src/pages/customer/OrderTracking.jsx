@@ -12,6 +12,7 @@ export default function OrderTracking() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [cancelling, setCancelling] = useState(false);
+  const [timeLeft, setTimeLeft] = useState('');
 
   const fetchOrder = async (showSpinner = false) => {
     if (showSpinner) setLoading(true);
@@ -41,6 +42,29 @@ export default function OrderTracking() {
     const interval = setInterval(() => { fetchOrder(false); }, 10000);
     return () => clearInterval(interval);
   }, [orderId]);
+
+  useEffect(() => {
+    if (!order) return;
+    const calculateTimeLeft = () => {
+      const createdAt = new Date(order.created_at);
+      const diffMs = new Date() - createdAt;
+      const totalWindowMs = 15 * 60 * 1000;
+      const remainingMs = totalWindowMs - diffMs;
+      
+      if (remainingMs <= 0 || !['accepted', 'preparing'].includes(order.status)) {
+        setTimeLeft('');
+        return;
+      }
+      
+      const mins = Math.floor(remainingMs / 1000 / 60);
+      const secs = Math.floor((remainingMs / 1000) % 60);
+      setTimeLeft(`${mins}:${secs < 10 ? '0' : ''}${secs}`);
+    };
+    
+    calculateTimeLeft();
+    const timer = setInterval(calculateTimeLeft, 1000);
+    return () => clearInterval(timer);
+  }, [order]);
 
   const handleCancelOrder = async () => {
     if (!window.confirm('Are you sure you want to cancel this order?')) return;
@@ -116,6 +140,21 @@ export default function OrderTracking() {
             {status.replace('_', ' ')}
           </span>
         </div>
+
+        {timeLeft && (
+          <div className="flex items-center justify-between p-3 rounded-xl bg-amber-50 border border-amber-200 mt-2">
+            <div className="text-xs text-amber-800 font-semibold">
+              <span className="block font-bold">Customize your order!</span>
+              <span className="block text-[10px] text-amber-600 font-medium">You can add extra dishes for the next {timeLeft} minutes.</span>
+            </div>
+            <button
+              onClick={() => navigate(`/customer/restaurants/${order.restaurant_id}`)}
+              className="px-3.5 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-black uppercase tracking-wider shadow-sm cursor-pointer transition-colors"
+            >
+              Add More
+            </button>
+          </div>
+        )}
 
         {status === 'pending' && (
           <button onClick={handleCancelOrder} disabled={cancelling} className="btn-danger w-full py-2.5 font-bold cursor-pointer">
@@ -236,17 +275,79 @@ export default function OrderTracking() {
       )}
 
       <div className="card-solid p-5 space-y-4 shadow-sm" style={{ backgroundColor: 'var(--bg-panel)', border: '1px solid var(--border)' }}>
-        <h3 className="text-xs font-extrabold uppercase tracking-wider pb-2" style={{ color: 'var(--text-muted)', borderBottom: '1px solid var(--border)' }}>Items Ordered</h3>
+        <h3 className="text-xs font-extrabold uppercase tracking-wider pb-2" style={{ color: 'var(--text-muted)', borderBottom: '1px solid var(--border)' }}>Original Items</h3>
         <div className="space-y-3">
-          {order.order_items?.map(item => (
+          {(order.order_items?.filter(item => !item.is_extra) || []).map(item => (
             <div key={item.id} className="flex justify-between items-center text-xs font-medium" style={{ color: 'var(--text-body)' }}>
               <span>{item.name} <span className="font-extrabold" style={{ color: 'var(--text-muted)' }}>x{item.quantity}</span></span>
               <span className="font-bold">₹{(Number(item.price) * item.quantity).toFixed(2)}</span>
             </div>
           ))}
         </div>
+
+        {order.order_items?.some(item => item.is_extra) && (
+          <div className="pt-4 space-y-3" style={{ borderTop: '1px dashed var(--border)' }}>
+            <h3 className="text-xs font-extrabold uppercase tracking-wider pb-1" style={{ color: 'var(--text-muted)' }}>Extra Items Added</h3>
+            <div className="space-y-3">
+              {order.order_items.filter(item => item.is_extra).map(item => {
+                let statusBadge = null;
+                if (item.extra_status === 'pending') {
+                  statusBadge = <span className="text-[9px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-full">⏳ Pending Chef Approval</span>;
+                } else if (item.extra_status === 'accepted') {
+                  statusBadge = <span className="text-[9px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">✅ Accepted</span>;
+                } else if (item.extra_status === 'rejected') {
+                  statusBadge = <span className="text-[9px] bg-rose-100 text-rose-800 font-bold px-2 py-0.5 rounded-full">❌ Declined</span>;
+                }
+                return (
+                  <div key={item.id} className="flex justify-between items-center text-xs font-medium" style={{ color: 'var(--text-body)' }}>
+                    <div className="flex flex-col gap-0.5">
+                      <span>{item.name} <span className="font-extrabold" style={{ color: 'var(--text-muted)' }}>x{item.quantity}</span></span>
+                      <div>{statusBadge}</div>
+                    </div>
+                    <span className="font-bold">₹{(Number(item.price) * item.quantity).toFixed(2)}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {order.extra_rejection_reason && (
+          <div className="bg-rose-50 border-l-4 border-rose-500 text-rose-700 p-3 rounded-lg text-xs font-semibold mt-3">
+            <span className="block font-bold">Extra items request was declined.</span>
+            <span className="block mt-0.5 font-medium text-rose-600">Reason: "{order.extra_rejection_reason}"</span>
+          </div>
+        )}
+
+        <div className="pt-3 space-y-1.5 text-xs font-semibold" style={{ borderTop: '1px solid var(--border)', color: 'var(--text-muted)' }}>
+          <div className="flex justify-between">
+            <span>Items Subtotal</span>
+            <span>₹{(Number(order.subtotal) - (order.order_items?.filter(item => item.is_extra && item.extra_status === 'accepted').reduce((acc, curr) => acc + (curr.price * curr.quantity), 0) || 0)).toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span>Delivery Fee</span>
+            <span>₹{Number(order.delivery_fee).toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span>Platform Service Fee</span>
+            <span>₹{Number(order.service_fee).toFixed(2)}</span>
+          </div>
+          {order.order_items?.some(item => item.is_extra && item.extra_status === 'accepted') && (
+            <div className="flex justify-between font-bold text-emerald-600">
+              <span>Accepted Extras</span>
+              <span>+₹{(order.order_items.filter(item => item.is_extra && item.extra_status === 'accepted').reduce((acc, curr) => acc + (curr.price * curr.quantity), 0)).toFixed(2)}</span>
+            </div>
+          )}
+          {order.order_items?.some(item => item.is_extra && item.extra_status === 'pending') && (
+            <div className="flex justify-between font-bold text-amber-600">
+              <span>Pending Extras (Awaiting Acceptance)</span>
+              <span>+₹{(order.order_items.filter(item => item.is_extra && item.extra_status === 'pending').reduce((acc, curr) => acc + (curr.price * curr.quantity), 0)).toFixed(2)}</span>
+            </div>
+          )}
+        </div>
+
         <div className="pt-3 flex justify-between items-center text-xs font-extrabold" style={{ borderTop: '1px solid var(--border)' }}>
-          <span style={{ color: 'var(--text-muted)' }}>Paid Total</span>
+          <span style={{ color: 'var(--text-muted)' }}>Total Amount</span>
           <span className="text-sm font-black" style={{ color: 'var(--text-head)' }}>₹{Number(order.total_amount).toFixed(2)}</span>
         </div>
         <div className="text-[10px] font-semibold leading-relaxed pt-3" style={{ color: 'var(--text-muted)', borderTop: '1px solid var(--border)' }}>
