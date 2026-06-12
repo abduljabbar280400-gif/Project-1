@@ -1,9 +1,11 @@
 import { FaRupeeSign } from 'react-icons/fa';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { FiShoppingBag, FiLayers, FiTruck, FiCoffee, FiLogOut, FiHome, FiSettings, FiActivity, FiUser, FiSun, FiMoon, FiSmile } from 'react-icons/fi';
 import { api } from '../services/api';
 import { useTheme } from '../context/ThemeContext';
+import PwaInstallPrompt from '../components/PwaInstallPrompt';
+import { notificationService } from '../services/notificationService';
 
 export default function MobileLayout({ children, role }) {
   const navigate = useNavigate();
@@ -11,6 +13,13 @@ export default function MobileLayout({ children, role }) {
   const user = JSON.parse(localStorage.getItem('num_user') || '{}');
   const activeRole = role || user.role;
   const { isDark, toggleTheme, isSimpleMode, toggleSimpleMode } = useTheme();
+
+  useEffect(() => {
+    // Request permission when user is authenticated
+    if (localStorage.getItem('num_token')) {
+      notificationService.requestPermission();
+    }
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -146,6 +155,7 @@ export default function MobileLayout({ children, role }) {
           </div>
         </header>
 
+        <PwaInstallPrompt />
 
         {/* Primary Page Content Wrapper */}
         <main className="flex-1 overflow-y-auto pb-24 px-4 pt-4">

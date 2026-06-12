@@ -4,6 +4,7 @@ import { api } from '../../services/api';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { FiArrowLeft, FiCheck, FiClock, FiUser, FiTruck, FiAlertTriangle } from 'react-icons/fi';
 import SEO from '../../components/SEO';
+import { notificationService } from '../../services/notificationService';
 
 export default function OrderTracking() {
   const { orderId } = useParams();
@@ -19,6 +20,10 @@ export default function OrderTracking() {
     try {
       const data = await api.customer.trackOrder(orderId);
       const fetchedOrder = data?.data || data;
+      
+      // Send notifications for order status transitions
+      notificationService.checkCustomerOrders([fetchedOrder]);
+
       setOrder(fetchedOrder);
 
       if (fetchedOrder.status === 'rejected') {

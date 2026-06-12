@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { api } from '../../services/api';
 import LoadingSpinner from '../../components/LoadingSpinner';
@@ -7,6 +7,7 @@ import { FiTruck, FiMapPin, FiPlay, FiCheck, FiCoffee, FiActivity } from 'react-
 import { useGeolocation } from '../../hooks/useGeolocation';
 import DeliveryJobMap from '../../components/maps/DeliveryJobMap';
 import SEO from '../../components/SEO';
+import { notificationService } from '../../services/notificationService';
 
 export default function DeliveryDashboard() {
   const [profile, setProfile] = useState(null);
@@ -19,6 +20,8 @@ export default function DeliveryDashboard() {
   const location = useLocation();
   const isActiveTab = location.pathname.includes('/active');
   const isJobsTab = location.pathname.includes('/jobs');
+
+  const jobNotifications = useRef(new Map());
 
   // Driver location
   const { location: driverLocation } = useGeolocation({ enableHighAccuracy: true }, true);
@@ -36,7 +39,38 @@ export default function DeliveryDashboard() {
     if (showSpinner) setLoading(true);
     try {
       const jobs = await api.delivery.getJobs();
-      setAvailableJobs(jobs?.data || jobs);
+      const jobsData = jobs?.data || jobs;
+      setAvailableJobs(jobsData);
+
+      // Clean up notifications for jobs that are no longer available (accepted by others)
+      const jobIds = new Set(jobsData.map(j => j.id));
+      for (const [notifiedJobId, notificationInstance] of jobNotifications.current.entries()) {
+        if (!jobIds.has(notifiedJobId)) {
+          notificationInstance.close();
+          jobNotifications.current.delete(notifiedJobId);
+        }
+      }
+
+      // Send notifications for newly available jobs
+      jobsData.forEach(job => {
+        if (!jobNotifications.current.has(job.id)) {
+          const notification = notificationService.send(
+            `driver-job-${job.id}`,
+            `New Delivery Job Available! 🛵`,
+            {
+              body: `Job #${job.id} from ${job.restaurant_name}. Payout: ₹${Number(job.delivery_fee).toFixed(2)}`,
+              requireInteraction: true
+            }
+          );
+          if (notification) {
+            jobNotifications.current.set(job.id, notification);
+            notification.onclose = () => {
+              jobNotifications.current.delete(job.id);
+            };
+          }
+        }
+      });
+
       const active = await api.delivery.getOrders();
       setActiveOrders(active?.data || active);
       setError(null);
@@ -49,7 +83,14 @@ export default function DeliveryDashboard() {
     const initialize = async () => { setLoading(true); await fetchProfile(); await fetchJobsAndDeliveries(false); setLoading(false); };
     initialize();
     const interval = setInterval(() => { fetchJobsAndDeliveries(false); }, 10000);
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      // Close all active job notifications when unmounting
+      for (const notificationInstance of jobNotifications.current.values()) {
+        notificationInstance.close();
+      }
+      jobNotifications.current.clear();
+    };
   }, []);
 
   const handleToggleOnline = async () => {

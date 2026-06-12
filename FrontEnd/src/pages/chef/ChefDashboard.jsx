@@ -4,6 +4,7 @@ import LoadingSpinner from '../../components/LoadingSpinner';
 import NetworkError from '../../components/NetworkError';
 import { FiCoffee, FiAlertCircle, FiVolume2, FiCheck, FiPlay, FiTrash2, FiClock } from 'react-icons/fi';
 import SEO from '../../components/SEO';
+import { notificationService } from '../../services/notificationService';
 
 export default function ChefDashboard() {
   const [restaurant, setRestaurant] = useState(null);
@@ -13,6 +14,7 @@ export default function ChefDashboard() {
   const [profileLoading, setProfileLoading] = useState(false);
 
   const knownOrderIds = useRef(new Set());
+  const knownExtraOrderIds = useRef(new Set());
 
   const playNewOrderChime = () => {
     try {
@@ -57,13 +59,39 @@ export default function ChefDashboard() {
       const activeOrders = await api.chef.getOrders();
       const ordersData = activeOrders?.data || activeOrders;
       setOrders(ordersData);
+      
       let hasNewPending = false;
       ordersData.forEach(o => {
-        if (o.status === 'pending' && !knownOrderIds.current.has(o.id)) hasNewPending = true;
+        // Notification for new pending orders
+        if (o.status === 'pending' && !knownOrderIds.current.has(o.id)) {
+          hasNewPending = true;
+          notificationService.send(`chef-order-${o.id}`, `New Order Received! 🍳`, {
+            body: `Order #${o.id} from ${o.customer_name}`
+          });
+        }
+
+        // Notification for extra items added
+        const hasPendingExtras = o.order_items?.some(item => item.is_extra && item.extra_status === 'pending');
+        if (hasPendingExtras && !knownExtraOrderIds.current.has(o.id)) {
+          notificationService.send(`chef-extra-${o.id}`, `Extra Items Requested! ⚠️`, {
+            body: `Customer added extras to Order #${o.id}`
+          });
+        }
       });
+
       const updatedSet = new Set();
-      ordersData.forEach(o => updatedSet.add(o.id));
+      const updatedExtraSet = new Set();
+      ordersData.forEach(o => {
+        updatedSet.add(o.id);
+        const hasPendingExtras = o.order_items?.some(item => item.is_extra && item.extra_status === 'pending');
+        if (hasPendingExtras) {
+          updatedExtraSet.add(o.id);
+        }
+      });
+      
       knownOrderIds.current = updatedSet;
+      knownExtraOrderIds.current = updatedExtraSet;
+
       if (hasNewPending && !showSpinner) playNewOrderChime();
       setError(null);
     } catch (err) {

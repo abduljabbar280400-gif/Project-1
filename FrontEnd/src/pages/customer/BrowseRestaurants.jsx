@@ -8,6 +8,8 @@ import { useGeolocation } from '../../hooks/useGeolocation';
 import { useTheme } from '../../context/ThemeContext';
 import SEO from '../../components/SEO';
 
+import { notificationService } from '../../services/notificationService';
+
 const CUISINES = ['All', 'Italian', 'Fast Food', 'Burgers', 'Dessert', 'Indian', 'Healthy'];
 
 const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
@@ -117,6 +119,10 @@ export default function BrowseRestaurants() {
     try {
       const orderData = await api.customer.getOrders();
       const ordersArray = orderData?.data || orderData;
+      
+      // Send notifications for order status transitions
+      notificationService.checkCustomerOrders(ordersArray);
+
       const viewedRejected = JSON.parse(localStorage.getItem('viewed_rejected_orders') || '[]');
 
       const active = ordersArray.filter(o => {
