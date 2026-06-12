@@ -5,6 +5,7 @@ import { FiShoppingBag, FiLayers, FiTruck, FiCoffee, FiLogOut, FiHome, FiSetting
 import { api } from '../services/api';
 import { useTheme } from '../context/ThemeContext';
 import PwaInstallPrompt from '../components/PwaInstallPrompt';
+import ToastContainer from '../components/ToastContainer';
 import { notificationService } from '../services/notificationService';
 
 export default function MobileLayout({ children, role }) {
@@ -156,6 +157,7 @@ export default function MobileLayout({ children, role }) {
         </header>
 
         <PwaInstallPrompt />
+        <ToastContainer />
 
         {/* Primary Page Content Wrapper */}
         <main className="flex-1 overflow-y-auto pb-24 px-4 pt-4">

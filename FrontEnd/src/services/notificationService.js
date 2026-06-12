@@ -22,11 +22,40 @@ export const notificationService = {
 
   // Send a browser notification
   send: (id, title, options = {}) => {
+    // 1. Dispatch custom event for visual in-app toast notification alert
+    const toastEvent = new CustomEvent('num_toast', {
+      detail: {
+        id,
+        title,
+        body: options.body || '',
+        icon: options.icon || '/logo.jpg',
+        requireInteraction: options.requireInteraction || false
+      }
+    });
+    window.dispatchEvent(toastEvent);
+
+    // Play chime sound
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5 chime
+      gain.gain.setValueAtTime(0.1, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.3);
+    } catch (e) {
+      console.warn('Audio synthesis chime blocked or not supported', e);
+    }
+
+    // 2. Try to trigger a system push notification
     if (!notificationService.hasPermission()) {
       return null;
     }
 
-    // Default configuration
     const defaultOptions = {
       icon: '/logo.jpg',
       badge: '/logo.jpg',
@@ -35,31 +64,44 @@ export const notificationService = {
       ...options
     };
 
-    try {
-      // Close existing notification with the same ID if exists
-      if (id && activeNotifications.has(id)) {
-        activeNotifications.get(id).close();
+    // Try service worker first (crucial for mobile browser/PWA support)
+    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+      navigator.serviceWorker.ready.then(registration => {
+        registration.showNotification(title, defaultOptions);
+      }).catch(err => {
+        console.warn('Service Worker notification failed, trying native Notification:', err);
+        try {
+          const notification = new Notification(title, defaultOptions);
+          if (id) activeNotifications.set(id, notification);
+        } catch (e) {
+          console.error('Notification constructor failed:', e);
+        }
+      });
+    } else {
+      try {
+        if (id && activeNotifications.has(id)) {
+          activeNotifications.get(id).close();
+        }
+        const notification = new Notification(title, defaultOptions);
+        if (id) {
+          activeNotifications.set(id, notification);
+          notification.onclose = () => {
+            activeNotifications.delete(id);
+          };
+        }
+        return notification;
+      } catch (err) {
+        console.error('Failed to trigger standard notification:', err);
       }
-
-      const notification = new Notification(title, defaultOptions);
-
-      // Save notification to close it later if required
-      if (id) {
-        activeNotifications.set(id, notification);
-        notification.onclose = () => {
-          activeNotifications.delete(id);
-        };
-      }
-
-      return notification;
-    } catch (err) {
-      console.error('Failed to trigger notification:', err);
-      return null;
     }
+    return null;
   },
 
   // Close a specific notification
   close: (id) => {
+    // Dispatch close event for in-app toast
+    window.dispatchEvent(new CustomEvent('num_toast_close', { detail: { id } }));
+
     if (activeNotifications.has(id)) {
       activeNotifications.get(id).close();
       activeNotifications.delete(id);
